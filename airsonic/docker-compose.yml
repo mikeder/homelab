@@ -1,0 +1,32 @@
+version: '3.1'
+
+services:
+  airsonic:
+    container_name: airsonic
+    image: airsonicadvanced/airsonic-advanced:latest
+    networks:
+      - proxy
+    environment:
+        #      PGID: 1000
+        #      PUID: 1000
+      CONTEXT_PATH: /
+      JAVA_OPTS: -Dserver.use-forward-headers=true -Dserver.context-path=/
+    labels:
+      - "traefik.backend=airsonic"
+      - "traefik.docker.network=proxy"
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:music.sqweeb.net"
+      - "traefik.port=4040"
+      - "traefik.protocol=http"
+      - "traefik.frontend.headers.SSLProxyHeaders=X-Forwarded-Proto:https||X-Forwarded-Port:443"
+      - "traefik.frontend.passHostHeader=true"
+    restart: always
+    volumes:
+      - /home/meder/airsonic/music:/var/music
+      - /home/meder/airsonic/playlists:/var/playlists
+      - /home/meder/airsonic/podcasts:/var/podcasts
+
+networks:
+  proxy:
+    external:
+      name: proxy

@@ -1,0 +1,26 @@
+version: '3.1'
+
+services:
+  traefik:
+    image: traefik:latest
+    restart: always
+#    healthcheck:
+#     test: curl http://locahost:8080 || exit 1
+#     interval: 10s
+#     timeout: 5s
+    ports:
+      - 80:80
+      - 443:443
+      - 8080:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/meder/traefik/traefik.toml:/traefik.toml
+      - /home/meder/traefik/acme.json:/acme.json
+    container_name: traefik
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external:
+      name: proxy
