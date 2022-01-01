@@ -5,15 +5,19 @@ services:
     image: deluan/navidrome:latest
     user: 1000:1000 # should be owner of volumes
     restart: unless-stopped
+    networks:
+      - proxy
     labels:
-      - "traefik.backend=navidrome"
-      - "traefik.docker.network=proxy"
       - "traefik.enable=true"
-      - "traefik.frontend.rule=Host:music.sqweeb.net"
-      - "traefik.port=4533"
+      - "traefik.http.routers.navidrome.tls=true"
+      - "traefik.http.routers.navidrome.tls.certresolver=http"
+      - "traefik.http.routers.navidrome.rule=Host(`music.sqweeb.net`)"
     environment:
       ND_SCANSCHEDULE: 1h
       ND_SESSIONTIMEOUT: 24h
     volumes:
       - "/home/meder/homelab/navidrome/data:/data"
       - "/mnt/music:/music:ro"
+networks:
+  proxy:
+    external: true
