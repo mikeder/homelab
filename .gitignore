@@ -1,2 +1,3 @@
-traefik/acme.json
+airsonic/data/*
 navidrome/data/*
+traefik/acme.json
