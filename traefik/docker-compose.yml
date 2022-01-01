@@ -1,26 +1,35 @@
-version: '3.1'
+version: '3'
 
 services:
   traefik:
-    image: traefik:latest
-    restart: always
-#    healthcheck:
-#     test: curl http://locahost:8080 || exit 1
-#     interval: 10s
-#     timeout: 5s
+    image: traefik:v2.5
+    container_name: traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - proxy
     ports:
       - 80:80
       - 443:443
-      - 8080:8080
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /home/meder/traefik/traefik.toml:/traefik.toml
-      - /home/meder/traefik/acme.json:/acme.json
-    container_name: traefik
-    networks:
-      - proxy
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /home/meder/homelab/traefik/traefik.yml:/traefik.yml:ro
+      - /home/meder/homelab/traefik/acme.json:/acme.json
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.entrypoints=http"
+      - "traefik.http.routers.traefik.rule=Host(`sqweeb.net`)"
+      - "traefik.http.middlewares.traefik-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.traefik.middlewares=traefik-https-redirect"
+      - "traefik.http.routers.traefik-secure.entrypoints=https"
+      - "traefik.http.routers.traefik-secure.rule=Host(`sqweeb.net`)"
+      - "traefik.http.routers.traefik-secure.middlewares=traefik-auth"
+      - "traefik.http.routers.traefik-secure.tls=true"
+      - "traefik.http.routers.traefik-secure.tls.certresolver=http"
+      - "traefik.http.routers.traefik-secure.service=api@internal"
 
 networks:
   proxy:
-    external:
-      name: proxy
+    external: true
