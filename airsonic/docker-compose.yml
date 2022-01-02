@@ -8,6 +8,8 @@ services:
     networks:
       - proxy
     environment:
+      PUID: 1000
+      PGID: 1000
       CONTEXT_PATH: /
       JAVA_OPTS: -Dserver.use-forward-headers=true -Dserver.context-path=/
     labels:
