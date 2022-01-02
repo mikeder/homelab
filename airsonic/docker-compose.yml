@@ -1,9 +1,10 @@
-version: '3.1'
-
+version: '3'
 services:
   airsonic:
     container_name: airsonic
     image: airsonicadvanced/airsonic-advanced:latest
+    user: 1000:1000 # should be owner of volumes
+    restart: unless-stopped
     networks:
       - proxy
     environment:
@@ -15,14 +16,11 @@ services:
       - "traefik.http.routers.airsonic.tls.certresolver=http"
       - "traefik.http.routers.airsonic.rule=Host(`airsonic.sqweeb.net`)"
       - "traefik.http.services.airsonic.loadbalancer.server.port=4040"
-    restart: unless-stopped 
     volumes:
       - /mnt/music:/var/music
       - /home/meder/homelab/airsonic/data:/var/airsonic
       - /home/meder/homelab/airsonic/playlists:/var/playlists
       - /home/meder/homelab/airsonic/podcasts:/var/podcasts
-
 networks:
   proxy:
-    external:
-      name: proxy
+    external: true
