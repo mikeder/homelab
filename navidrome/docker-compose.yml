@@ -12,7 +12,7 @@ services:
       - traefik.http.routers.navidrome.entrypoints=https
       - traefik.http.routers.navidrome.tls=true
       - traefik.http.routers.navidrome.tls.certresolver=letsencrypt
-      - traefik.http.routers.navidrome.rule=Host(`navidrome.sqweeb.net`)
+      - traefik.http.routers.navidrome.rule=Host(`music.sqweeb.net`)
       - traefik.http.routers.navidrome.middlewares=redirect-https # redirect http to https
     environment:
       ND_SCANSCHEDULE: 1h
