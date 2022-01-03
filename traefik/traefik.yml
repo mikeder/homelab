@@ -17,7 +17,7 @@ providers:
     exposedByDefault: false
 
 certificatesResolvers:
-  http:
+  letsencrypt:
     acme:
       email: sqweebking@gmail.com
       storage: acme.json
