@@ -2,19 +2,18 @@ version: '3'
 
 services:
   vaultwarden:
-    image: vaultwarden/server:latest
     container_name: vaultwarden
-    restart: always
+    image: vaultwarden/server:latest
+    user: 1000:1000
+    restart: unless-stopped
     networks:
       - proxy
     environment:
       - WEBSOCKET_ENABLED=true  # Enable WebSocket notifications.
     volumes:
-      - ./vw-data:/data
+      - /home/meder/homelab/vaultwarden/vw-data:/data
     labels:
       - traefik.enable=true
-      - traefik.http.middlewares.redirect-https.redirectScheme.scheme=https
-      - traefik.http.middlewares.redirect-https.redirectScheme.permanent=true
       - traefik.http.routers.bitwarden-ui-https.rule=Host(`vault.sqweeb.net`)
       - traefik.http.routers.bitwarden-ui-https.entrypoints=https
       - traefik.http.routers.bitwarden-ui-https.tls=true
@@ -30,7 +29,7 @@ services:
       - traefik.http.routers.bitwarden-websocket-https.service=bitwarden-websocket
       - traefik.http.routers.bitwarden-websocket-http.rule=Host(`vault.sqweeb.net`) && Path(`/notifications/hub`)
       - traefik.http.routers.bitwarden-websocket-http.entrypoints=http
-      - traefik.http.routers.bitwarden-websocket-http.middlewares=redirect-https
+      - traefik.http.routers.bitwarden-websocket-http.middlewares=redirect-https # redirect http to https
       - traefik.http.routers.bitwarden-websocket-http.service=bitwarden-websocket
       - traefik.http.services.bitwarden-websocket.loadbalancer.server.port=3012
 networks:
