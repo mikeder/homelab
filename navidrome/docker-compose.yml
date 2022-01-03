@@ -8,10 +8,10 @@ services:
     networks:
       - proxy
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.navidrome.tls=true"
-      - "traefik.http.routers.navidrome.tls.certresolver=http"
-      - "traefik.http.routers.navidrome.rule=Host(`music.sqweeb.net`)"
+      - traefik.enable=true
+      - traefik.http.routers.navidrome.tls=true
+      - traefik.http.routers.navidrome.tls.certresolver=http
+      - traefik.http.routers.navidrome.rule=Host(`music.sqweeb.net`)
     environment:
       ND_SCANSCHEDULE: 1h
       ND_SESSIONTIMEOUT: 24h

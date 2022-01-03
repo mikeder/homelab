@@ -13,11 +13,11 @@ services:
       CONTEXT_PATH: /
       JAVA_OPTS: -Dserver.use-forward-headers=true -Dserver.context-path=/
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.airsonic.tls=true"
-      - "traefik.http.routers.airsonic.tls.certresolver=http"
-      - "traefik.http.routers.airsonic.rule=Host(`airsonic.sqweeb.net`)"
-      - "traefik.http.services.airsonic.loadbalancer.server.port=4040"
+      - traefik.enable=true
+      - traefik.http.routers.airsonic.tls=true
+      - traefik.http.routers.airsonic.tls.certresolver=http
+      - traefik.http.routers.airsonic.rule=Host(`airsonic.sqweeb.net`)
+      - traefik.http.services.airsonic.loadbalancer.server.port=4040
       - traefik.http.routers.airsonic.middlewares=redirect-https # redirect http to https
     volumes:
       - /mnt/music:/var/music

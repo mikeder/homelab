@@ -1,25 +1,21 @@
-version: "3.1"
-
+version: "3"
 services:
   portainer:
     container_name: portainer
     image: portainer/portainer-ce:latest
     restart: always
     networks:
-      - proxy 
-    expose:
-      - "9000"
+      - proxy
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - "/home/meder/docker/portainer_data:/data"
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/meder/docker/portainer_data:/data
     labels:
-      - "traefik.backend=portainer"
-      - "traefik.enable=true"
-      - "traefik.port=9000"
-      - "traefik.protocol=http"
-      - "traefik.docker.network=proxy"
-      - "traefik.frontend.rule=Host:docker.sqweeb.net"
-
+      - traefik.enable=true
+      - traefik.http.routers.portainer.tls=true
+      - traefik.http.routers.portainer.tls.certresolver=http
+      - traefik.http.routers.portainer.rule=Host(`docker.sqweeb.net`)
+      # - traefik.http.services.portainer.loadbalancer.server.port=9000
+      - traefik.http.routers.portainer.middlewares=redirect-https # redirect http to https
 networks:
   proxy:
     external:
