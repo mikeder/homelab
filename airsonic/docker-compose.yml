@@ -14,6 +14,7 @@ services:
       JAVA_OPTS: -Dserver.use-forward-headers=true -Dserver.context-path=/
     labels:
       - traefik.enable=true
+      - traefik.http.routers.airsonic.entrypoints=https
       - traefik.http.routers.airsonic.tls=true
       - traefik.http.routers.airsonic.tls.certresolver=http
       - traefik.http.routers.airsonic.rule=Host(`airsonic.sqweeb.net`)
