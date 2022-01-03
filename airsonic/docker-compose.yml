@@ -11,7 +11,7 @@ services:
       PUID: 1000
       PGID: 1000
       CONTEXT_PATH: /
-      JAVA_OPTS: -Dserver.use-forward-headers=true -Dserver.context-path=/
+      JAVA_OPTS: -Dserver.use-forward-headers=true -Dserver.forward-headers-strategy=native -Dserver.context-path=/
     labels:
       - traefik.enable=true
       - traefik.http.routers.airsonic.entrypoints=https
