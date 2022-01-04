@@ -10,6 +10,8 @@ entryPoints:
     address: ":80"
   https:
     address: ":443"
+  upnp:
+    address: ":1900/udp"
 
 providers:
   docker:
