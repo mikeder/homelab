@@ -10,6 +10,8 @@ entryPoints:
     address: ":80"
   https:
     address: ":443"
+  airsonic-dlna:
+    address: ":4041/udp"
   upnp:
     address: ":1900/udp"
 
