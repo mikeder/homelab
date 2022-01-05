@@ -25,7 +25,7 @@ services:
       - traefik.udp.routers.airsonic-upnp.service=airsonic-upnp
       - traefik.udp.routers.airsonic-upnp.entrypoints=upnp
       - traefik.http.services.airsonic-http.loadbalancer.server.port=4040
-      - traefik.http.services.airsonic-upnp.loadbalancer.server.port=1900
+      - traefik.udp.services.airsonic-upnp.loadbalancer.server.port=1900
     volumes:
       - /mnt/music:/var/music
       - /home/meder/homelab/airsonic/data:/var/airsonic
