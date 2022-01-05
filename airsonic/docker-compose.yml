@@ -26,8 +26,7 @@ services:
       - traefik.http.routers.airsonic-secure.tls.certresolver=letsencrypt
       - traefik.http.routers.airsonic-secure.rule=Host(`airsonic.sqweeb.net`)
       - traefik.http.routers.airsonic-secure.service=airsonic-http
-      - traefik.http.services.airsonic-http.loadbalancer.server.port=4040
-      - traefik.tcp.routers.airsonic-dlna.rule=HostSNI(`airsonic.sqweeb.net`)
+      - traefik.http.services.airsonic-http.loadbalancer.server.url=http://host.docker.internal:4040
     volumes:
       - /mnt/music:/var/music
       - /home/meder/homelab/airsonic/data:/var/airsonic
