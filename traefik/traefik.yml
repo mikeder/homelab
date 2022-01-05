@@ -11,6 +11,28 @@ entryPoints:
   https:
     address: ":443"
 
+http:
+  services:
+    airsonic:
+      loadBalancer:
+        servers:
+        - url: "http://host.docker.internal:4040"
+  routers:
+    airsonic:
+      entryPoints:
+          - "http"
+      rule: "Host(`airsonic.sqweeb.net`)"
+      service: "airsonic"
+      middlewares:
+        - redirect-https
+    airsonic-secure:
+      entryPoints:
+          - "https"
+      rule: "Host(`airsonic.sqweeb.net`)"
+      service: "airsonic"
+      tls:
+        certResolver: letsencrypt
+
 providers:
   docker:
     endpoint: "unix:///var/run/docker.sock"
