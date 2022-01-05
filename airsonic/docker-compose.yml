@@ -22,10 +22,10 @@ services:
       - traefik.http.routers.airsonic-secure.rule=Host(`airsonic.sqweeb.net`)
       - traefik.http.routers.airsonic-secure.service=airsonic-http
       - traefik.http.services.airsonic-http.loadbalancer.server.port=4040
-      - traefik.udp.routers.airsonic-dlna.entrypoints=airsonic-dlna
-      - traefik.udp.routers.airsonic-dlna.service=airsonic-dlna
-      - traefik.udp.services.airsonic-dlna.loadbalancer.server.port=4041
-      - traefik.udp.routers.airsonic-upnp.entrypoints=upnp
+      - traefik.tcp.routers.airsonic-dlna.entrypoints=airsonic-dlna
+      - traefik.tcp.routers.airsonic-dlna.service=airsonic-dlna
+      - traefik.tcp.services.airsonic-dlna.loadbalancer.server.port=4041
+      - traefik.udp.routers.airsonic-upnp.entrypoints=airsonic-upnp
       - traefik.udp.routers.airsonic-upnp.service=airsonic-upnp
       - traefik.udp.services.airsonic-upnp.loadbalancer.server.port=1900
     volumes:

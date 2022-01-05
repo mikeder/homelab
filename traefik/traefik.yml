@@ -11,8 +11,8 @@ entryPoints:
   https:
     address: ":443"
   airsonic-dlna:
-    address: ":4041/udp"
-  upnp:
+    address: ":4041"
+  airsonic-upnp:
     address: ":1900/udp"
 
 providers:
