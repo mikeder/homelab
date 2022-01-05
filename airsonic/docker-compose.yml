@@ -22,6 +22,7 @@ services:
       - traefik.http.routers.airsonic-secure.rule=Host(`airsonic.sqweeb.net`)
       - traefik.http.routers.airsonic-secure.service=airsonic-http
       - traefik.http.services.airsonic-http.loadbalancer.server.port=4040
+      - traefik.tcp.routers.airsonic-dlna.rule=HostSNI(`airsonic.sqweeb.net`)
       - traefik.tcp.routers.airsonic-dlna.entrypoints=airsonic-dlna
       - traefik.tcp.routers.airsonic-dlna.service=airsonic-dlna
       - traefik.tcp.services.airsonic-dlna.loadbalancer.server.port=4041
