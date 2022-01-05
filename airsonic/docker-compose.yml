@@ -5,8 +5,13 @@ services:
     image: airsonicadvanced/airsonic-advanced:latest
     user: 1000:1000
     restart: unless-stopped
-    networks:
-      - proxy
+    network_mode: host
+    ports:
+      - 4040:4040
+      - 4041:4041
+      - 1900:1900/udp
+    # networks:
+    #   - proxy
     environment:
       PUID: 1000
       PGID: 1000
@@ -23,17 +28,11 @@ services:
       - traefik.http.routers.airsonic-secure.service=airsonic-http
       - traefik.http.services.airsonic-http.loadbalancer.server.port=4040
       - traefik.tcp.routers.airsonic-dlna.rule=HostSNI(`airsonic.sqweeb.net`)
-      - traefik.tcp.routers.airsonic-dlna.entrypoints=airsonic-dlna
-      - traefik.tcp.routers.airsonic-dlna.service=airsonic-dlna
-      - traefik.tcp.services.airsonic-dlna.loadbalancer.server.port=4041
-      - traefik.udp.routers.airsonic-upnp.entrypoints=airsonic-upnp
-      - traefik.udp.routers.airsonic-upnp.service=airsonic-upnp
-      - traefik.udp.services.airsonic-upnp.loadbalancer.server.port=1900
     volumes:
       - /mnt/music:/var/music
       - /home/meder/homelab/airsonic/data:/var/airsonic
       - /home/meder/homelab/airsonic/playlists:/var/playlists
       - /home/meder/homelab/airsonic/podcasts:/var/podcasts
-networks:
-  proxy:
-    external: true
+# networks:
+#   proxy:
+#     external: true
