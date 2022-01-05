@@ -15,6 +15,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /home/meder/homelab/traefik/acme.json:/acme.json
       - /home/meder/homelab/traefik/traefik.yml:/traefik.yml
+      - /home/meder/homelab/traefik/rules.yml:/rules.yml
     labels:
       - traefik.enable=true
       - traefik.http.middlewares.redirect-https.redirectScheme.scheme=https
