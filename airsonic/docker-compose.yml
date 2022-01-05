@@ -21,10 +21,9 @@ services:
       - traefik.http.routers.airsonic-secure.tls.certresolver=letsencrypt
       - traefik.http.routers.airsonic-secure.rule=Host(`airsonic.sqweeb.net`)
       - traefik.http.routers.airsonic-secure.service=airsonic-http
-      - traefik.udp.routers.airsonic-upnp.rule=Host(`airsonic.sqweeb.net`)
-      - traefik.udp.routers.airsonic-upnp.service=airsonic-upnp
-      - traefik.udp.routers.airsonic-upnp.entrypoints=upnp
       - traefik.http.services.airsonic-http.loadbalancer.server.port=4040
+      - traefik.udp.routers.airsonic-upnp.entrypoints=upnp
+      - traefik.udp.routers.airsonic-upnp.service=airsonic-upnp
       - traefik.udp.services.airsonic-upnp.loadbalancer.server.port=1900
     volumes:
       - /mnt/music:/var/music
