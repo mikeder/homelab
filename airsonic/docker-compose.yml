@@ -6,10 +6,10 @@ services:
     user: 1000:1000
     restart: unless-stopped
     network_mode: host
-    ports:
-      - 4040:4040
-      - 4041:4041
-      - 1900:1900/udp
+    # ports:
+    #   - 4040:4040
+    #   - 4041:4041
+    #   - 1900:1900/udp
     # networks:
     #   - proxy
     environment:
