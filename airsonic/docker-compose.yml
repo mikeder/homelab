@@ -17,7 +17,7 @@ services:
       - traefik.http.routers.airsonic.rule=Host(`airsonic.sqweeb.net`)
       - traefik.http.routers.airsonic.service=airsonic-http
       - traefik.http.routers.airsonic-upnp.rule=Host(`airsonic.sqweeb.net`)
-      - traefik.http.routers.airsonic.service=airsonic-upnp
+      - traefik.http.routers.airsonic-upnp.service=airsonic-upnp
       - traefik.http.routers.airsonic-upnp.entrypoints=upnp
       - traefik.http.routers.airsonic.middlewares=redirect-https # redirect http to https
       - traefik.http.routers.airsonic-secure.tls=true
