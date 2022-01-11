@@ -3,7 +3,6 @@ http:
     redirect-https:
       redirectScheme:
         scheme: https
-        permanent: true
   services:
     airsonic:
       loadBalancer:
