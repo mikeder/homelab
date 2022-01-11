@@ -17,7 +17,7 @@ services:
       - /home/meder/homelab/traefik/traefik.yml:/traefik.yml
       - /home/meder/homelab/traefik/rules.yml:/rules.yml
     labels:
-      # - traefik.enable=true
+      - traefik.enable=true
       # - traefik.http.middlewares.redirect-https.redirectScheme.scheme=https
       # - traefik.http.routers.traefik.entrypoints=http
       # - traefik.http.routers.traefik.rule=Host(`sqweeb.net`)
