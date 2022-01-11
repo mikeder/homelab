@@ -8,7 +8,7 @@ services:
       - proxy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /home/meder/docker/portainer_data:/data
+      - /home/meder/homelab/portainer/portainer_data:/data
     labels:
       - traefik.enable=true
       - traefik.http.routers.portainer.entrypoints=https
