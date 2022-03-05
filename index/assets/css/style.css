@@ -38,13 +38,12 @@ a:active {
 .grid-container {
     display: grid;
     grid-template-columns: auto auto;
-    padding: 5px;
 }
 
 .grid-item {
     background-color: rgba(43, 40, 40, 0.568);
     border: 1px solid lightseagreen;
-    padding: 15px;
+    padding: 10px;
     font-size: 30px;
     text-align: center;
 }
