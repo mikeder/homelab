@@ -22,18 +22,33 @@ a {
     font-size: 22px;
     line-height: 35px;
     border-radius: 2px;
-    /* text-shadow: hotpink; */
+    border-width: 1px;
+    text-shadow: hotpink;
     box-shadow: hotpink;
 }
 
 a:hover {
-    background-color: rgba(43, 40, 40, 0.568);
-    border-width: 1px;
-    color: lightseagreen;
+    color: hotpink;
 }
 
 a:active {
+    color: lightblue;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto;
+    padding: 5px;
+}
+
+.grid-item {
     background-color: rgba(43, 40, 40, 0.568);
-    border-width: 1px;
-    color: hotpink;
+    border: 1px solid lightseagreen;
+    padding: 15px;
+    font-size: 30px;
+    text-align: center;
+}
+
+.grid-item:hover {
+    background-color: rgb(131, 123, 123);
 }
