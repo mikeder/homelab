@@ -2,3 +2,5 @@ airsonic/data/*
 navidrome/data/*
 vaultwarden/vw-data/*
 traefik/acme.json
+
+.DS_Store
