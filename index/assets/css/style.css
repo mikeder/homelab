@@ -1,0 +1,39 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, segoe ui, Roboto, Oxygen, Ubuntu, Cantarell, open sans, helvetica neue, sans-serif;
+    width: 60%;
+    margin: auto;
+    text-align: center;
+    font-size: 18px;
+    padding: 10px;
+    background-color: #121212;
+    color: rgb(131, 123, 123);
+}
+
+h1 {
+    color: lightseagreen;
+}
+
+a {
+    /* float: left; */
+    color: whitesmoke;
+    text-align: center;
+    padding: 12px;
+    text-decoration: none;
+    font-size: 22px;
+    line-height: 35px;
+    border-radius: 2px;
+    /* text-shadow: hotpink; */
+    box-shadow: hotpink;
+}
+
+a:hover {
+    background-color: rgba(43, 40, 40, 0.568);
+    border-width: 1px;
+    color: lightseagreen;
+}
+
+a:active {
+    background-color: rgba(43, 40, 40, 0.568);
+    border-width: 1px;
+    color: hotpink;
+}

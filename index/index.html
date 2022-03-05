@@ -6,32 +6,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
+    <!-- main style -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
+    <link rel="manifest" href="assets/icons/site.webmanifest">
+
+    <!-- fontawesome icons -->
+    <link href="assets/fontawesome/css/fontawesome.css" rel="stylesheet">
+    <link href="assets/fontawesome/css/solid.css" rel="stylesheet">
+
     <title>sqweeb.net</title>
-
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, segoe ui, Roboto, Oxygen, Ubuntu, Cantarell, open sans, helvetica neue, sans-serif;
-            width: 60%;
-            margin: auto;
-            text-align: center;
-            font-size: 18px;
-            padding: 10px;
-            background-color: #121212;
-            color: rgb(131, 123, 123);
-        }
-        
-        h1 {
-            color: lightseagreen;
-        }
-    </style>
-
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
 </head>
 
 <h1>sqweeb.net index</h1>
+
+<div class="nav">
+
+    <a href="smb://freenas/Share">
+        <i class="fa-solid fa-database"></i> FreeNAS</a>
+    <a href="https://music.sqweeb.net/" target="_blank">
+        <i class="fa-solid fa-record-vinyl"></i> Music</a>
+    <a href="https://192.168.1.230:8006/" target="_blank">
+        <i class="fa-solid fa-server"></i> Proxmox</a>
+    <a href="https://192.168.1.1/#/login/" target="_blank">
+        <i class="fa-solid fa-network-wired"></i> Router</a>
+    <a href="https://docker.sqweeb.net:8443/manage/account/login" target="_blank">
+        <i class="fa-solid fa-wifi"></i> Unifi</a>
+    <a href="https://vault.sqweeb.net/" target="_blank">
+        <i class="fa-solid fa-vault"></i> Vault</a>
+
+</div>
+
+<hr>
 
 <div id="rust">
     <script type="application/javascript">
