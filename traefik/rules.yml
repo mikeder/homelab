@@ -4,22 +4,4 @@ http:
       redirectScheme:
         scheme: https
   services:
-    airsonic:
-      loadBalancer:
-        servers:
-        - url: "http://docker:4040"
   routers:
-    airsonic:
-      entryPoints:
-          - "http"
-      rule: "Host(`airsonic.sqweeb.net`)"
-      service: "airsonic"
-      middlewares:
-        - redirect-https
-    airsonic-secure:
-      entryPoints:
-          - "https"
-      rule: "Host(`airsonic.sqweeb.net`)"
-      service: "airsonic"
-      tls:
-        certResolver: letsencrypt
