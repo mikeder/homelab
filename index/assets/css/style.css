@@ -27,8 +27,12 @@ a {
     box-shadow: hotpink;
 }
 
+mark {
+    background-color: #c0ffc8;
+}
+
 a:hover {
-    color: hotpink;
+    color: #c0ffc8;
 }
 
 a:active {
@@ -48,6 +52,7 @@ a:active {
     text-align: center;
 }
 
-.grid-item:hover {
+
+/* .grid-item:hover {
     background-color: rgb(131, 123, 123);
-}
+} */
