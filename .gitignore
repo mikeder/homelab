@@ -1,6 +1,8 @@
-navidrome/data/*
-valheim/data/*
-vaultwarden/vw-data/*
+navidrome/data/
+valheim/data/
+vaultwarden/vw-data/
+portainer/portainer_data/
+unifi/config/
 traefik/acme.json
 
 .DS_Store
