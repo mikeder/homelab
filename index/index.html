@@ -56,31 +56,4 @@
 </div>
 
 
-<hr>
-    
-<div id="valheim">
-    <script type="application/javascript">
-        window.addEventListener('message', function(e) {
-            if (e.data.uid && e.data.type === 'sizeUpdate') {
-                var i = document.querySelector('iframe[name="' + e.data.uid + '"]');
-                i.style.width = e.data.payload.width;
-                i.style.height = e.data.payload.height;
-            }
-        });
-    </script><iframe src="https://cdn.battlemetrics.com/b/standardVertical/15165612.html?foreground=%23837b7b&linkColor=%2320b2aa&lines=%23333333&background=%23222222&chart=players%3A24H&chartColor=%2320b2aa&showPlayers=1&maxPlayersHeight=300" frameborder=0
-        style="border:0" name="aiynx"></iframe>
-</div>
-
-<div id="rust">
-    <script type="application/javascript">
-        window.addEventListener('message', function(e) {
-            if (e.data.uid && e.data.type === 'sizeUpdate') {
-                var i = document.querySelector('iframe[name="' + e.data.uid + '"]');
-                i.style.width = e.data.payload.width;
-                i.style.height = e.data.payload.height;
-            }
-        });
-    </script><iframe src="https://cdn.battlemetrics.com/b/standardVertical/14246862.html?foreground=%23837b7b&linkColor=%2320b2aa&lines=%23333333&background=%23222222&chart=players%3A24H&chartColor=%2320b2aa&showPlayers=1&maxPlayersHeight=300" frameborder=0
-        style="border:0" name="aiynx"></iframe>
-</div>
 </html>
