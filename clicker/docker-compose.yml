@@ -1,0 +1,43 @@
+version: "3"
+services:
+  clicker:
+    container_name: clicker 
+    image: mikeder/clicker:latest
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.clicker.entrypoints=https
+      - traefik.http.routers.clicker.tls=true
+      - traefik.http.routers.clicker.tls.certresolver=letsencrypt
+      - traefik.http.routers.clicker.rule=Host(`click.sqweeb.net`)
+      - traefik.http.routers.clicker.middlewares=redirect-https # redirect http to https
+      - traefik.http.services.clicker.loadbalancer.server.port=10000
+
+  db:
+    image: postgres:latest
+    restart: always
+    volumes:
+      - /home/meder/homelab/clicker/data:/var/lib/postgresql/data
+    networks:
+      - proxy
+    environment:
+      POSTGRES_DB: shitlist
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secretPW
+
+  migrate:
+    image: mikeder/clicker:latest-migrate
+    restart: on-failure
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external:
+      name: proxy
