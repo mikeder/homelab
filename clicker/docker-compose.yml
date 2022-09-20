@@ -1,7 +1,7 @@
 version: "3"
 services:
   clicker:
-    container_name: clicker 
+    container_name: clicker
     image: mikeder/clicker:latest
     restart: always
     env_file:
@@ -11,13 +11,19 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     labels:
+      # enable traefik ingress
       - traefik.enable=true
-      - traefik.http.routers.clicker.entrypoints=https
-      - traefik.http.routers.clicker.tls=true
-      - traefik.http.routers.clicker.tls.certresolver=letsencrypt
-      - traefik.http.routers.clicker.rule=Host(`click.sqweeb.net`)
-      - traefik.http.routers.clicker.middlewares=redirect-https # redirect http to https
-      - traefik.http.services.clicker.loadbalancer.server.port=10000
+
+      # http web
+      - traefik.http.routers.clicker-http.entrypoints=http
+      - traefik.http.routers.clicker-http.rule=Host(`click.sqweeb.net`)
+      - traefik.http.routers.clicker-http.middlewares=redirect-https # redirect http to https
+
+      # https web
+      - traefik.http.routers.clicker-https.tls=true
+      - traefik.http.routers.clicker-https.entrypoints=https
+      - traefik.http.routers.clicker-https.tls.certresolver=letsencrypt
+      - traefik.http.routers.clicker-https.rule=Host(`click.sqweeb.net`)
 
   db:
     image: postgres:latest

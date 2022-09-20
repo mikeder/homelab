@@ -19,13 +19,6 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.middlewares.redirect-https.redirectScheme.scheme=https
-      # - traefik.http.routers.traefik.entrypoints=http
-      # - traefik.http.routers.traefik.rule=Host(`sqweeb.net`)
-      # - traefik.http.routers.traefik.middlewares=redirect-https # redirect http to https
-      # - traefik.http.routers.traefik-secure.entrypoints=https
-      # - traefik.http.routers.traefik-secure.rule=Host(`sqweeb.net`)
-      # - traefik.http.routers.traefik-secure.tls=true
-      # - traefik.http.routers.traefik-secure.tls.certresolver=letsencrypt
 networks:
   proxy:
     external: true

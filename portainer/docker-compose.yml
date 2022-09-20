@@ -11,11 +11,15 @@ services:
       - /home/meder/homelab/portainer/portainer_data:/data
     labels:
       - traefik.enable=true
-      - traefik.http.routers.portainer.entrypoints=https
-      - traefik.http.routers.portainer.tls=true
-      - traefik.http.routers.portainer.tls.certresolver=letsencrypt
-      - traefik.http.routers.portainer.rule=Host(`docker.sqweeb.net`)
-      - traefik.http.routers.portainer.middlewares=redirect-https # redirect http to https
+      - traefik.http.routers.portainer-http.entrypoints=http
+      - traefik.http.routers.portainer-http.service=portainer
+      - traefik.http.routers.portainer-http.rule=Host(`docker.sqweeb.net`)
+      - traefik.http.routers.portainer-http.middlewares=redirect-https # redirect http to https
+      - traefik.http.routers.portainer-https.tls=true
+      - traefik.http.routers.portainer-https.entrypoints=https
+      - traefik.http.routers.portainer-https.service=portainer
+      - traefik.http.routers.portainer-https.tls.certresolver=letsencrypt
+      - traefik.http.routers.portainer-https.rule=Host(`docker.sqweeb.net`)
       - traefik.http.services.portainer.loadbalancer.server.port=9000
 networks:
   proxy:

@@ -9,30 +9,39 @@ services:
     networks:
       - proxy
     environment:
-      - WEBSOCKET_ENABLED=true  # Enable WebSocket notifications.
+      - WEBSOCKET_ENABLED=true # Enable WebSocket notifications.
     volumes:
       - /home/meder/homelab/vaultwarden/vw-data:/data
     labels:
+      # enable traefik ingress
       - traefik.enable=true
-      - traefik.http.routers.bitwarden-ui-https.rule=Host(`vault.sqweeb.net`)
-      - traefik.http.routers.bitwarden-ui-https.entrypoints=https
-      - traefik.http.routers.bitwarden-ui-https.tls=true
-      - traefik.http.routers.bitwarden-ui-https.tls.certresolver=letsencrypt
-      - traefik.http.routers.bitwarden-ui-https.service=bitwarden-ui
-      - traefik.http.routers.bitwarden-ui-http.rule=Host(`vault.sqweeb.net`)
-      - traefik.http.routers.bitwarden-ui-http.entrypoints=http
-      - traefik.http.routers.bitwarden-ui-http.middlewares=redirect-https
-      - traefik.http.routers.bitwarden-ui-http.service=bitwarden-ui
       - traefik.http.services.bitwarden-ui.loadbalancer.server.port=80
-      - traefik.http.routers.bitwarden-websocket-https.rule=Host(`vault.sqweeb.net`) && Path(`/notifications/hub`)
-      - traefik.http.routers.bitwarden-websocket-https.entrypoints=https
-      - traefik.http.routers.bitwarden-websocket-https.tls=true
-      - traefik.http.routers.bitwarden-websocket-https.service=bitwarden-websocket
-      - traefik.http.routers.bitwarden-websocket-http.rule=Host(`vault.sqweeb.net`) && Path(`/notifications/hub`)
-      - traefik.http.routers.bitwarden-websocket-http.entrypoints=http
-      - traefik.http.routers.bitwarden-websocket-http.middlewares=redirect-https # redirect http to https
-      - traefik.http.routers.bitwarden-websocket-http.service=bitwarden-websocket
-      - traefik.http.services.bitwarden-websocket.loadbalancer.server.port=3012
+      - traefik.http.services.bitwarden-ws.loadbalancer.server.port=3012
+
+      # http web ui
+      - traefik.http.routers.bitwarden-ui-http.entrypoints=http
+      - traefik.http.routers.bitwarden-ui-http.rule=Host(`vault.sqweeb.net`)
+      - traefik.http.routers.bitwarden-ui-http.middlewares=redirect-https # redirect http to https
+      - traefik.http.routers.bitwarden-ui-http.service=bitwarden-ui
+
+      # https web ui
+      - traefik.http.routers.bitwarden-ui-https.tls=true
+      - traefik.http.routers.bitwarden-ui-https.entrypoints=https
+      - traefik.http.routers.bitwarden-ui-https.service=bitwarden-ui
+      - traefik.http.routers.bitwarden-ui-https.tls.certresolver=letsencrypt
+      - traefik.http.routers.bitwarden-ui-https.rule=Host(`vault.sqweeb.net`)
+
+      # http websocket
+      - traefik.http.routers.bitwarden-ws-http.entrypoints=http
+      - traefik.http.routers.bitwarden-ws-http.middlewares=redirect-https # redirect http to https
+      - traefik.http.routers.bitwarden-ws-http.service=bitwarden-ws
+      - traefik.http.routers.bitwarden-ws-http.rule=Host(`vault.sqweeb.net`) && Path(`/notifications/hub`)
+
+      # https websocket? not sure if needed
+      - traefik.http.routers.bitwarden-ws-https.tls=true
+      - traefik.http.routers.bitwarden-ws-https.entrypoints=https
+      - traefik.http.routers.bitwarden-ws-https.service=bitwarden-ws
+      - traefik.http.routers.bitwarden-ws-https.rule=Host(`vault.sqweeb.net`) && Path(`/notifications/hub`)
 networks:
   proxy:
     external: true
