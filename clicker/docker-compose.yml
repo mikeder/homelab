@@ -26,7 +26,7 @@ services:
       - traefik.http.routers.clicker-https.rule=Host(`click.sqweeb.net`)
 
   db:
-    image: postgres:latest
+    image: postgres:14
     restart: always
     volumes:
       - /home/meder/homelab/clicker/data:/var/lib/postgresql/data
