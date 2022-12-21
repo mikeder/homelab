@@ -26,8 +26,8 @@ services:
     env_file:
       - .env
     ports:
-      - "1935:1935" # Comment if you don't want to use the live feature
-      - "9000:9000" # Uncomment if you use another webserver/proxy or test PeerTube in local, otherwise not suitable for production
+      - "1935" # Comment if you don't want to use the live feature
+      - "9000" # Uncomment if you use another webserver/proxy or test PeerTube in local, otherwise not suitable for production
     volumes:
       - assets:/app/client/dist
       - ./docker-volume/data:/data
