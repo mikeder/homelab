@@ -40,6 +40,8 @@ services:
 
   postgres:
     image: postgres:13-alpine
+    networks:
+      - proxy
     env_file:
       - .env
     volumes:
@@ -48,12 +50,16 @@ services:
 
   redis:
     image: redis:6-alpine
+    networks:
+      - proxy
     volumes:
       - ./docker-volume/redis:/data
     restart: "always"
 
   postfix:
     image: mwader/postfix-relay
+    networks:
+      - proxy
     env_file:
       - .env
     volumes:
