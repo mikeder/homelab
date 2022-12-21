@@ -14,15 +14,15 @@ services:
       - traefik.http.services.peertube.loadbalancer.server.port=9000
 
       # http web ui
-      - traefik.http.routers.navidrome-http.entrypoints=http
-      - traefik.http.routers.navidrome-http.rule=Host(`peertube.sqweeb.net`)
-      - traefik.http.routers.navidrome-http.middlewares=redirect-https # redirect http to https
+      - traefik.http.routers.peertube-http.entrypoints=http
+      - traefik.http.routers.peertube-http.rule=Host(`peertube.sqweeb.net`)
+      - traefik.http.routers.peertube-http.middlewares=redirect-https # redirect http to https
 
       # https web ui
-      - traefik.http.routers.navidrome-https.tls=true
-      - traefik.http.routers.navidrome-https.entrypoints=https
-      - traefik.http.routers.navidrome-https.tls.certresolver=letsencrypt
-      - traefik.http.routers.navidrome-https.rule=Host(`peertube.sqweeb.net`)
+      - traefik.http.routers.peertube-https.tls=true
+      - traefik.http.routers.peertube-https.entrypoints=https
+      - traefik.http.routers.peertube-https.tls.certresolver=letsencrypt
+      - traefik.http.routers.peertube-https.rule=Host(`peertube.sqweeb.net`)
     env_file:
       - .env
     ports:
