@@ -9,4 +9,5 @@ traefik/acme.json
 
 .DS_Store
 
+peertube/.env
 peertube/docker-volume/
