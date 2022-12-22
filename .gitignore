@@ -8,3 +8,5 @@ unifi/config/
 traefik/acme.json
 
 .DS_Store
+
+peertube/docker-volume/
