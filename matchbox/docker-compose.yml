@@ -1,0 +1,26 @@
+version: "3"
+services:
+  index:
+    container_name: matchbox_server
+    image: jhelsing/matchbox-server:0.6
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      # enable traefik ingress
+      - traefik.enable=true
+
+      # http web ui
+      - traefik.http.routers.matchbox-http.entrypoints=http
+      - traefik.http.routers.matchbox-http.rule=Host(`match.sqweeb.net`)
+      - traefik.http.routers.matchbox-http.middlewares=redirect-https # redirect http to https
+
+      # https web ui
+      - traefik.http.routers.matchbox-https.tls=true
+      - traefik.http.routers.matchbox-https.entrypoints=https
+      - traefik.http.routers.matchbox-https.tls.certresolver=letsencrypt
+      - traefik.http.routers.matchbox-https.rule=Host(`match.sqweeb.net`)
+
+networks:
+  proxy:
+    external: true
