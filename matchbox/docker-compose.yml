@@ -6,6 +6,8 @@ services:
     restart: unless-stopped
     networks:
       - proxy
+    ports:
+      - 3536:3536
     labels:
       # enable traefik ingress
       - traefik.enable=true
