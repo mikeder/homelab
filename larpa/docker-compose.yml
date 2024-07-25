@@ -1,0 +1,29 @@
+version: "3"
+services:
+  larpa:
+    container_name: larpa
+    image: ghcr.io/mikeder/golarpa:server
+    restart: always
+    networks:
+      - proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      # enable traefik ingress
+      - traefik.enable=true
+
+      # http web
+      - traefik.http.routers.larpa-http.entrypoints=http
+      - traefik.http.routers.larpa-http.rule=Host(`larpa.sqweeb.net`)
+      - traefik.http.routers.larpa-http.middlewares=redirect-https # redirect http to https
+
+      # https web
+      - traefik.http.routers.larpa-https.tls=true
+      - traefik.http.routers.larpa-https.entrypoints=https
+      - traefik.http.routers.larpa-https.tls.certresolver=letsencrypt
+      - traefik.http.routers.larpa-https.rule=Host(`larpa.sqweeb.net`)
+
+networks:
+  proxy:
+    external:
+      name: proxy
