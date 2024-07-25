@@ -22,7 +22,7 @@ services:
       - traefik.http.routers.larpa-https.entrypoints=https
       - traefik.http.routers.larpa-https.tls.certresolver=letsencrypt
       - traefik.http.routers.larpa-https.rule=Host(`larpa.sqweeb.net`)
-      - "traefik.http.middlewares.cors.headers.customResponseHeaders.Access-Control-Allow-Origin=https://toiletfrags.net"
+      - "traefik.http.middlewares.cors.headers.accesscontrolalloworiginlist=https://toiletfrags.net"
       - "traefik.http.routers.larpa-https.middlewares=cors"
 
 networks:
