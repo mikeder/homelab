@@ -4,7 +4,8 @@ services:
     container_name: index
     image: nginx
     volumes:
-      - .:/usr/share/nginx/html
+      - ./site/:/usr/share/nginx/html
+      - .nginx.conf:/etc/nginx/conf.d/default.conf:ro
     restart: unless-stopped
     networks:
       - proxy
