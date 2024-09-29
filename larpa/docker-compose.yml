@@ -2,7 +2,7 @@ version: "3"
 services:
   larpa:
     container_name: larpa
-    image: ghcr.io/mikeder/golarpa:latest
+    image: mikeder/golarpa:server
     restart: always
     networks:
       - proxy
