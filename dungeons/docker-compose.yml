@@ -1,6 +1,6 @@
 version: "3"
 services:
-  larpa:
+  dungeons:
     container_name: dungeons
     image: mikeder/dungeons:server
     restart: always
