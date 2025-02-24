@@ -15,15 +15,15 @@ services:
       - traefik.enable=true
 
       # http web
-      - traefik.http.routers.larpa-http.entrypoints=http
-      - traefik.http.routers.larpa-http.rule=Host(`dungeons.sqweeb.net`)
-      - traefik.http.routers.larpa-http.middlewares=redirect-https # redirect http to https
+      - traefik.http.routers.dungeons-http.entrypoints=http
+      - traefik.http.routers.dungeons-http.rule=Host(`dungeons.sqweeb.net`)
+      - traefik.http.routers.dungeons-http.middlewares=redirect-https # redirect http to https
 
       # https web
-      - traefik.http.routers.larpa-https.tls=true
-      - traefik.http.routers.larpa-https.entrypoints=https
-      - traefik.http.routers.larpa-https.tls.certresolver=letsencrypt
-      - traefik.http.routers.larpa-https.rule=Host(`dungeons.sqweeb.net`)
+      - traefik.http.routers.dungeons-https.tls=true
+      - traefik.http.routers.dungeons-https.entrypoints=https
+      - traefik.http.routers.dungeons-https.tls.certresolver=letsencrypt
+      - traefik.http.routers.dungeons-https.rule=Host(`dungeons.sqweeb.net`)
 
 networks:
   proxy:
