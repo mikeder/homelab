@@ -9,7 +9,6 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
       - /home/meder/homelab/larpa/larpa_data:/root/.local/share/godot/app_userdata/LARPA
     labels:
       # enable traefik ingress

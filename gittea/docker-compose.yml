@@ -8,6 +8,10 @@ services:
       - USER_UID=1000
       - USER_GID=1000
     restart: unless-stopped
+    volumes:
+      - ./gitea:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     networks:
       - proxy
     labels:
