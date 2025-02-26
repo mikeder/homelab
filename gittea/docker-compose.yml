@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  server:
+    image: docker.io/gitea/gitea:1.23.4
+    container_name: gitea
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      # enable traefik ingress
+      - traefik.enable=true
+
+      # http web ui
+      - traefik.http.routers.gittea-http.entrypoints=http
+      - traefik.http.routers.gittea-http.rule=Host(`git.sqweeb.net`)
+      - traefik.http.routers.gittea-http.middlewares=redirect-https # redirect http to https
+
+      # https web ui
+      - traefik.http.routers.gittea-https.tls=true
+      - traefik.http.routers.gittea-https.entrypoints=https
+      - traefik.http.routers.gittea-https.tls.certresolver=letsencrypt
+      - traefik.http.routers.gittea-https.rule=Host(`git.sqweeb.net`)
+
+networks:
+  proxy:
+    external: true
