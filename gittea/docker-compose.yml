@@ -28,6 +28,7 @@ services:
       - traefik.http.routers.gittea-https.entrypoints=https
       - traefik.http.routers.gittea-https.tls.certresolver=letsencrypt
       - traefik.http.routers.gittea-https.rule=Host(`git.sqweeb.net`)
+      - traefik.http.services.gittea.loadbalancer.server.port=3000
 
 networks:
   proxy:
