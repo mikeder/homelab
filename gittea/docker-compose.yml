@@ -3,6 +3,9 @@ version: "3"
 services:
   runner:
     image: docker.io/gitea/act_runner:nightly
+    depends_on:
+      server:
+        condition: service_started
     environment:
       CONFIG_FILE: /config.yaml
       GITEA_INSTANCE_URL: "http://server:3000"
