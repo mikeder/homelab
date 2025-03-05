@@ -17,17 +17,6 @@ services:
       - traefik.http.routers.index-int-http.entrypoints=http
       - traefik.http.routers.index-int-http.rule=Host(`tsnet`)
 
-      # http web ui public
-      - traefik.http.routers.index-http.entrypoints=http
-      - traefik.http.routers.index-http.rule=Host(`sqweeb.net`)
-      - traefik.http.routers.index-http.middlewares=redirect-https # redirect http to https
-
-      # https web ui
-      - traefik.http.routers.index-https.tls=true
-      - traefik.http.routers.index-https.entrypoints=https
-      - traefik.http.routers.index-https.tls.certresolver=letsencrypt
-      - traefik.http.routers.index-https.rule=Host(`sqweeb.net`)
-
 networks:
   proxy:
     external: true
