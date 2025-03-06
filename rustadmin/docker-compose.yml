@@ -1,0 +1,48 @@
+version: "3"
+services:
+  api:
+    container_name: rustadmin-api
+    image: mikeder/rustadmin:api
+    restart: always
+    networks:
+      - proxy
+    labels:
+      # enable traefik ingress
+      - traefik.enable=true
+
+      # http web
+      - traefik.http.routers.rustadmin-http.entrypoints=http
+      - traefik.http.routers.rustadmin-http.rule=Host(`rustadmin.sqweeb.net`)
+      - traefik.http.routers.rustadmin-http.middlewares=redirect-https # redirect http to https
+
+      # https web
+      - traefik.http.routers.rustadmin-https.tls=true
+      - traefik.http.routers.rustadmin-https.entrypoints=https
+      - traefik.http.routers.rustadmin-https.tls.certresolver=letsencrypt
+      - traefik.http.routers.rustadmin-https.rule=Host(`rustadmin.sqweeb.net`)
+
+  site:
+    container_name: rustadmin-site
+    image: mikeder/rustadmin:site
+    restart: always
+    networks:
+      - proxy
+    labels:
+      # enable traefik ingress
+      - traefik.enable=true
+
+      # http web
+      - traefik.http.routers.rustadmin-site-http.entrypoints=http
+      - traefik.http.routers.rustadmin-site-http.rule=Host(`team.sqweeb.net`)
+      - traefik.http.routers.rustadmin-site-http.middlewares=redirect-https # redirect http to https
+
+      # https web
+      - traefik.http.routers.rustadmin-site-https.tls=true
+      - traefik.http.routers.rustadmin-site-https.entrypoints=https
+      - traefik.http.routers.rustadmin-site-https.tls.certresolver=letsencrypt
+      - traefik.http.routers.rustadmin-site-https.rule=Host(`team.sqweeb.net`)
+
+networks:
+  proxy:
+    external:
+      name: proxy
