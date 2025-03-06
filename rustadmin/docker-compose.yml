@@ -3,17 +3,12 @@ services:
   api:
     container_name: rustadmin-api
     image: mikeder/rustadmin:api
-    restart: always
+    restart: unless-stopped
     networks:
       - proxy
     labels:
       # enable traefik ingress
       - traefik.enable=true
-
-      # http web
-      - traefik.http.routers.rustadmin-http.entrypoints=http
-      - traefik.http.routers.rustadmin-http.rule=Host(`rustadmin.sqweeb.net`)
-      - traefik.http.routers.rustadmin-http.middlewares=redirect-https # redirect http to https
 
       # https web
       - traefik.http.routers.rustadmin-https.tls=true
@@ -24,7 +19,7 @@ services:
   site:
     container_name: rustadmin-site
     image: mikeder/rustadmin:site
-    restart: always
+    restart: unless-stopped
     networks:
       - proxy
     labels:
