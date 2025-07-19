@@ -1,0 +1,43 @@
+version: "3"
+services:
+  api:
+    container_name: tinygameplatform-api
+    image: mikeder/tinygameplatform:api
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      # enable traefik ingress
+      - traefik.enable=true
+
+      # https web
+      - traefik.http.routers.tinygameplatform-https.tls=true
+      - traefik.http.routers.tinygameplatform-https.entrypoints=https
+      - traefik.http.routers.tinygameplatform-https.tls.certresolver=letsencrypt
+      - traefik.http.routers.tinygameplatform-https.rule=Host(`api.tgp.sqweeb.net`)
+
+  site:
+    container_name: tinygameplatform-site
+    image: mikeder/tinygameplatform:site
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      # enable traefik ingress
+      - traefik.enable=true
+
+      # http web
+      - traefik.http.routers.tinygameplatform-site-http.entrypoints=http
+      - traefik.http.routers.tinygameplatform-site-http.rule=Host(`tgp.sqweeb.net`)
+      - traefik.http.routers.tinygameplatform-site-http.middlewares=redirect-https # redirect http to https
+
+      # https web
+      - traefik.http.routers.tinygameplatform-site-https.tls=true
+      - traefik.http.routers.tinygameplatform-site-https.entrypoints=https
+      - traefik.http.routers.tinygameplatform-site-https.tls.certresolver=letsencrypt
+      - traefik.http.routers.tinygameplatform-site-https.rule=Host(`tgp.sqweeb.net`)
+
+networks:
+  proxy:
+    external:
+      name: proxy
