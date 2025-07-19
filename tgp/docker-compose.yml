@@ -55,6 +55,8 @@ services:
       POSTGRES_DB: tgp
       POSTGRES_USER: tgp
       POSTGRES_PASSWORD: tgp
+    networks:
+      - proxy
 
   migrate:
     image: mikeder/tinygameplatform:migrate
