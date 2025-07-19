@@ -20,6 +20,8 @@ services:
       - traefik.http.routers.tinygameplatform-https.entrypoints=https
       - traefik.http.routers.tinygameplatform-https.tls.certresolver=letsencrypt
       - traefik.http.routers.tinygameplatform-https.rule=Host(`api.tgp.sqweeb.net`)
+      # use h2c scheme for grpc backend
+      # https://doc.traefik.io/traefik/user-guides/grpc/#conclusion
       - traefik.http.services.tinygameplatform-https.loadbalancer.server.scheme=h2c
 
   site:
