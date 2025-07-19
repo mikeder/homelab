@@ -3,8 +3,11 @@ services:
   api:
     container_name: tinygameplatform-api
     image: mikeder/tinygameplatform:api
+    depends_on:
+      - db
+      - migrate
     environment:
-      - PORT=value
+      - PORT=8080
     restart: unless-stopped
     networks:
       - proxy
@@ -21,6 +24,8 @@ services:
   site:
     container_name: tinygameplatform-site
     image: mikeder/tinygameplatform:site
+    depends_on:
+      - api
     restart: unless-stopped
     networks:
       - proxy
