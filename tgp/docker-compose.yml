@@ -3,6 +3,8 @@ services:
   api:
     container_name: tinygameplatform-api
     image: mikeder/tinygameplatform:api
+    environment:
+      - PORT=value
     restart: unless-stopped
     networks:
       - proxy
@@ -40,8 +42,6 @@ services:
   db:
     container_name: tinygameplatform-db
     image: postgres
-    depends_on:
-      - migrate
     restart: always
     shm_size: 128mb
     ports:
@@ -50,10 +50,12 @@ services:
       POSTGRES_DB: tgp
       POSTGRES_USER: tgp
       POSTGRES_PASSWORD: tgp
-      
+
   migrate:
     image: mikeder/tinygameplatform:migrate
     restart: on-failure
+    depends_on:
+      - db
     environment:
       - DATABASEHOST=db
       - DATABASEUSERNAME=tgp
