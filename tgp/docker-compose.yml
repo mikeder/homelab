@@ -37,6 +37,30 @@ services:
       - traefik.http.routers.tinygameplatform-site-https.tls.certresolver=letsencrypt
       - traefik.http.routers.tinygameplatform-site-https.rule=Host(`tgp.sqweeb.net`)
 
+  db:
+    container_name: tinygameplatform-db
+    image: postgres
+    depends_on:
+      - migrate
+    restart: always
+    shm_size: 128mb
+    ports:
+      - "5432"
+    environment:
+      POSTGRES_DB: tgp
+      POSTGRES_USER: tgp
+      POSTGRES_PASSWORD: tgp
+      
+  migrate:
+    image: mikeder/tinygameplatform:migrate
+    restart: on-failure
+    environment:
+      - DATABASEHOST=db
+      - DATABASEUSERNAME=tgp
+      - DATABASEPASSWORD=tgp
+    networks:
+      - proxy
+
 networks:
   proxy:
     external:
