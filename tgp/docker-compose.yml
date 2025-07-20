@@ -60,6 +60,8 @@ services:
       POSTGRES_PASSWORD: tgp
     networks:
       - proxy
+    volumes:
+      - /home/meder/homelab/tgp/data:/var/lib/postgresql/data
 
   migrate:
     image: mikeder/tinygameplatform:migrate
