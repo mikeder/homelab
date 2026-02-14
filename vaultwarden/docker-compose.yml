@@ -9,6 +9,7 @@ services:
     networks:
       - proxy
     environment:
+      - DOMAIN=https://vault.sqweeb.net
       - WEBSOCKET_ENABLED=true # Enable WebSocket notifications.
     volumes:
       - /home/meder/homelab/vaultwarden/vw-data:/data

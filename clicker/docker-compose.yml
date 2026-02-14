@@ -39,7 +39,7 @@ services:
 
   migrate:
     image: mikeder/clicker:latest-migrate
-    restart: on-failure
+      #restart: on-failure
     networks:
       - proxy
 
