@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  netdash:
+    container_name: netdash
+    image: ghcr.io/mikeder/netdash:main
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      # enable traefik ingress
+      - traefik.enable=true
+
+      # http web ui
+      - traefik.http.routers.netdash-http.entrypoints=http
+      - traefik.http.routers.netdash-http.rule=Host(`netdash.sqweeb.net`)
+      - traefik.http.routers.netdash-http.middlewares=redirect-https # redirect http to https
+
+      # https web ui
+      - traefik.http.routers.netdash-https.tls=true
+      - traefik.http.routers.netdash-https.entrypoints=https
+      - traefik.http.routers.netdash-https.tls.certresolver=letsencrypt
+      - traefik.http.routers.netdash-https.rule=Host(`netdash.sqweeb.net`)
+
+networks:
+  proxy:
+    external: true
