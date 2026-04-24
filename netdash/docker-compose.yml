@@ -2,7 +2,12 @@ version: "3"
 
 services:
   netdash:
+    cap_add:
+      - NET_RAW
     container_name: netdash
+    environment:
+      NETDASH_SUBNET: 192.168.1
+      NETDASH_INTERFACE: ens18
     image: ghcr.io/mikeder/netdash:main
     restart: unless-stopped
     networks:

@@ -1,3 +1,6 @@
+*.env
+
+
 clicker/data/
 clicker/.env
 navidrome/data/
