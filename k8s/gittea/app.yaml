@@ -1,0 +1,101 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gitea-data
+  namespace: homelab
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: local-path
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: gitea
+  namespace: homelab
+spec:
+  serviceName: gitea
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitea
+  template:
+    metadata:
+      labels:
+        app: gitea
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+      - name: gitea
+        image: docker.io/gitea/gitea:latest
+        ports:
+        - containerPort: 3000
+          name: http
+        - containerPort: 22
+          name: ssh
+        env:
+        - name: USER_UID
+          value: "1000"
+        - name: USER_GID
+          value: "1000"
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: localtime
+          mountPath: /etc/localtime
+          readOnly: true
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: gitea-data
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitea
+  namespace: homelab
+spec:
+  selector:
+    app: gitea
+  ports:
+  - name: http
+    port: 3000
+    targetPort: 3000
+  - name: ssh
+    port: 22
+    targetPort: 22
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gitea
+  namespace: homelab
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: homelab-redirect-https@kubernetescrd
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: traefik
+  tls:
+  - hosts:
+    - git.sqweeb.net
+    secretName: gitea-tls
+  rules:
+  - host: git.sqweeb.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: gitea
+            port:
+              number: 3000

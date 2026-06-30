@@ -1,0 +1,25 @@
+# k3s HelmChartConfig to customize the built-in Traefik deployment.
+# Place this file in /var/lib/rancher/k3s/server/manifests/ on the node,
+# or apply with: kubectl apply -f k8s/traefik/helmchart-values.yaml
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    ports:
+      web:
+        redirectTo:
+          port: websecure
+    ingressRoute:
+      dashboard:
+        enabled: true
+    providers:
+      kubernetesCRD:
+        enabled: true
+      kubernetesIngress:
+        enabled: true
+    logs:
+      general:
+        level: WARN

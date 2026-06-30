@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: larpa-data
+  namespace: homelab
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: local-path
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: larpa
+  namespace: homelab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: larpa
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: larpa
+    spec:
+      containers:
+      - name: larpa
+        image: mikeder/larpa:server
+        ports:
+        - containerPort: 3000
+        volumeMounts:
+        - name: larpa-data
+          mountPath: /root/.local/share/godot/app_userdata/LARPA
+      volumes:
+      - name: larpa-data
+        persistentVolumeClaim:
+          claimName: larpa-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: larpa
+  namespace: homelab
+spec:
+  selector:
+    app: larpa
+  ports:
+  - port: 3000
+    targetPort: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: larpa
+  namespace: homelab
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: homelab-redirect-https@kubernetescrd
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: traefik
+  tls:
+  - hosts:
+    - larpa.sqweeb.net
+    secretName: larpa-tls
+  rules:
+  - host: larpa.sqweeb.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: larpa
+            port:
+              number: 3000

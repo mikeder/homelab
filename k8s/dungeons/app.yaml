@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dungeons
+  namespace: homelab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dungeons
+  template:
+    metadata:
+      labels:
+        app: dungeons
+    spec:
+      containers:
+      - name: dungeons
+        image: mikeder/dungeons:server
+        ports:
+        - containerPort: 9080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dungeons
+  namespace: homelab
+spec:
+  selector:
+    app: dungeons
+  ports:
+  - port: 9080
+    targetPort: 9080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dungeons
+  namespace: homelab
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: homelab-redirect-https@kubernetescrd
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: traefik
+  tls:
+  - hosts:
+    - dungeons.sqweeb.net
+    secretName: dungeons-tls
+  rules:
+  - host: dungeons.sqweeb.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: dungeons
+            port:
+              number: 9080

@@ -1,0 +1,107 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vaultwarden-data
+  namespace: homelab
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: local-path
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vaultwarden
+  namespace: homelab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vaultwarden
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: vaultwarden
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+      containers:
+      - name: vaultwarden
+        image: vaultwarden/server:latest
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 3012
+          name: websocket
+        env:
+        - name: DOMAIN
+          value: "https://vault.sqweeb.net"
+        - name: WEBSOCKET_ENABLED
+          value: "true"
+        envFrom:
+        - secretRef:
+            name: vaultwarden-secret
+            optional: true
+        volumeMounts:
+        - name: data
+          mountPath: /data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: vaultwarden-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vaultwarden
+  namespace: homelab
+spec:
+  selector:
+    app: vaultwarden
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+  - name: websocket
+    port: 3012
+    targetPort: 3012
+---
+# UI ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vaultwarden
+  namespace: homelab
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: homelab-redirect-https@kubernetescrd
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: traefik
+  tls:
+  - hosts:
+    - vault.sqweeb.net
+    secretName: vaultwarden-tls
+  rules:
+  - host: vault.sqweeb.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: vaultwarden
+            port:
+              number: 80
+      - path: /notifications/hub
+        pathType: Prefix
+        backend:
+          service:
+            name: vaultwarden
+            port:
+              number: 3012

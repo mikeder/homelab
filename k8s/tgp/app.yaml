@@ -1,0 +1,121 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tgp-api
+  namespace: homelab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tgp-api
+  template:
+    metadata:
+      labels:
+        app: tgp-api
+    spec:
+      initContainers:
+      - name: wait-for-db
+        image: postgres:14
+        command:
+        - sh
+        - -c
+        - until pg_isready -h tgp-db -U tgp; do echo "waiting for postgres"; sleep 2; done
+      containers:
+      - name: api
+        image: mikeder/tinygameplatform:api
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - secretRef:
+            name: tgp-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tgp-api
+  namespace: homelab
+spec:
+  selector:
+    app: tgp-api
+  ports:
+  - port: 8080
+    targetPort: 8080
+---
+# gRPC backend requires h2c (cleartext HTTP/2); use Traefik IngressRoute CRD
+# instead of standard Ingress to set the h2c backend scheme.
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: tgp-api
+  namespace: homelab
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - match: Host(`api.tgp.sqweeb.net`)
+    kind: Rule
+    services:
+    - name: tgp-api
+      port: 8080
+      scheme: h2c
+  tls:
+    certResolver: letsencrypt
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tgp-site
+  namespace: homelab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tgp-site
+  template:
+    metadata:
+      labels:
+        app: tgp-site
+    spec:
+      containers:
+      - name: site
+        image: mikeder/tinygameplatform:site
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tgp-site
+  namespace: homelab
+spec:
+  selector:
+    app: tgp-site
+  ports:
+  - port: 80
+    targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tgp-site
+  namespace: homelab
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: homelab-redirect-https@kubernetescrd
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: traefik
+  tls:
+  - hosts:
+    - tgp.sqweeb.net
+    secretName: tgp-site-tls
+  rules:
+  - host: tgp.sqweeb.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: tgp-site
+            port:
+              number: 80

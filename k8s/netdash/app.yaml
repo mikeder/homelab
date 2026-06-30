@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netdash
+  namespace: homelab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: netdash
+  template:
+    metadata:
+      labels:
+        app: netdash
+    spec:
+      containers:
+      - name: netdash
+        image: ghcr.io/mikeder/netdash:main
+        env:
+        - name: NETDASH_SUBNET
+          value: "192.168.1"
+        - name: NETDASH_INTERFACE
+          value: "ens18"
+        securityContext:
+          capabilities:
+            add: ["NET_RAW"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: netdash
+  namespace: homelab
+spec:
+  selector:
+    app: netdash
+  ports:
+  - port: 80
+    targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: netdash
+  namespace: homelab
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: homelab-redirect-https@kubernetescrd
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: traefik
+  tls:
+  - hosts:
+    - netdash.sqweeb.net
+    secretName: netdash-tls
+  rules:
+  - host: netdash.sqweeb.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: netdash
+            port:
+              number: 80

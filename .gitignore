@@ -12,5 +12,8 @@ traefik/acme.json
 
 .DS_Store
 
+# Kubernetes secrets (copy from secret.yaml.example and fill in real values)
+k8s/*/secret.yaml
+
 peertube/.env
 peertube/docker-volume/

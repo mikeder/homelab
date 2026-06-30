@@ -1,0 +1,127 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: navidrome-data
+  namespace: homelab
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: local-path
+---
+# HostPath PV for read-only NFS music mount.
+# Ensure /mnt/music is mounted on the k3s node before deploying.
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: navidrome-music
+spec:
+  capacity:
+    storage: 500Gi
+  accessModes:
+  - ReadOnlyMany
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/music
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: navidrome-music
+  namespace: homelab
+spec:
+  accessModes:
+  - ReadOnlyMany
+  resources:
+    requests:
+      storage: 500Gi
+  volumeName: navidrome-music
+  storageClassName: ""
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: navidrome
+  namespace: homelab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: navidrome
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: navidrome
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+      containers:
+      - name: navidrome
+        image: deluan/navidrome:latest
+        ports:
+        - containerPort: 4533
+        env:
+        - name: ND_SCANSCHEDULE
+          value: "1h"
+        - name: ND_SESSIONTIMEOUT
+          value: "24h"
+        - name: ND_RECENTLYADDEDBYMODTIME
+          value: "true"
+        - name: ND_ENABLESHARING
+          value: "true"
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: music
+          mountPath: /music
+          readOnly: true
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: navidrome-data
+      - name: music
+        persistentVolumeClaim:
+          claimName: navidrome-music
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: navidrome
+  namespace: homelab
+spec:
+  selector:
+    app: navidrome
+  ports:
+  - port: 4533
+    targetPort: 4533
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: navidrome
+  namespace: homelab
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: homelab-redirect-https@kubernetescrd
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: traefik
+  tls:
+  - hosts:
+    - music.sqweeb.net
+    secretName: navidrome-tls
+  rules:
+  - host: music.sqweeb.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: navidrome
+            port:
+              number: 4533

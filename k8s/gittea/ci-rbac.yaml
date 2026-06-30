@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ci-deployer
+  namespace: homelab
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: ci-deployer
+  namespace: homelab
+rules:
+- apiGroups: ["apps"]
+  resources: ["deployments", "statefulsets"]
+  verbs: ["get", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: ci-deployer
+  namespace: homelab
+subjects:
+- kind: ServiceAccount
+  name: ci-deployer
+  namespace: homelab
+roleRef:
+  kind: Role
+  name: ci-deployer
+  apiGroup: rbac.authorization.k8s.io
+---
+# Long-lived token for the runner to use
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ci-deployer-token
+  namespace: homelab
+  annotations:
+    kubernetes.io/service-account.name: ci-deployer
+type: kubernetes.io/service-account-token
