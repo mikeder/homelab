@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile.migrate
+    environment:
+      - PORTAINER_TOKEN=${PORTAINER_TOKEN}
+    volumes:
+      - .:/app
+    networks:
+      - default
+    command: "${MIGRATE_ARGS:-}"
