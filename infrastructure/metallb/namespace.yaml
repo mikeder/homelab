@@ -1,0 +1,15 @@
+# This cluster enforces the "baseline" Pod Security Admission policy by
+# default (Talos's default hardening) for every namespace except the
+# kube-system ones. MetalLB's speaker/frr-k8s pods need hostNetwork,
+# NET_ADMIN/NET_RAW, and hostPorts to do L2 announcement - all forbidden
+# under "baseline". Without this override those DaemonSet pods are silently
+# rejected at admission (0/2 ready forever) and the HelmRelease never
+# reaches Ready. Must apply before the HelmRelease's pods are first created.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: metallb-system
+  labels:
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
