@@ -1,0 +1,7 @@
+creation_rules:
+  - path_regex: talos/(secrets\.yaml|kubeconfig|talosconfig)$
+    input_type: yaml
+    age: age1pqz3x7fww2sj7v2crdkxu6vz0hdlduze7dhvwntajyk70fjp8g7s4n6qvr
+  - path_regex: talos/(controlplane|worker)\.yaml$
+    input_type: binary
+    age: age1pqz3x7fww2sj7v2crdkxu6vz0hdlduze7dhvwntajyk70fjp8g7s4n6qvr
