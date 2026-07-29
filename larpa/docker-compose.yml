@@ -25,6 +25,14 @@ services:
       - traefik.http.routers.larpa-https.tls.certresolver=letsencrypt
       - traefik.http.routers.larpa-https.rule=Host(`larpa.sqweeb.net`)
 
+  watchtower:
+    container_name: larpa-watchtower
+    image: containrrr/watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 60 larpa
+
 networks:
   proxy:
     external:
