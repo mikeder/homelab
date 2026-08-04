@@ -68,6 +68,7 @@ services:
         #    - /home/meder/homelab/tgp/data:/var/lib/postgresql/data
 
   migrate:
+    container_name: tinygameplatform-migrate
     image: mikeder/tinygameplatform:migrate
     restart: on-failure
     depends_on:
@@ -78,6 +79,14 @@ services:
       - DATABASEPASSWORD=tgp
     networks:
       - proxy
+
+  watchtower:
+    container_name: tinygameplatform-watchtower
+    image: containrrr/watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 60 tinygameplatform-api tinygameplatform-site tinygameplatform-migrate
 
 networks:
   proxy:
