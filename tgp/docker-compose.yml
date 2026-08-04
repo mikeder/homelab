@@ -53,7 +53,7 @@ services:
 
   db:
     container_name: tinygameplatform-db
-    image: postgres
+    image: postgres:16
     restart: always
     shm_size: 128mb
     ports:
@@ -64,8 +64,8 @@ services:
       POSTGRES_PASSWORD: tgp
     networks:
       - proxy
-        #  volumes:
-        #    - /home/meder/homelab/tgp/data:/var/lib/postgresql/data
+    volumes:
+      - /home/meder/homelab/tgp/data:/var/lib/postgresql/data
 
   migrate:
     container_name: tinygameplatform-migrate
