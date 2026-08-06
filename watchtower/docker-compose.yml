@@ -1,0 +1,9 @@
+version: "3"
+services:
+  watchtower:
+    container_name: tinygameplatform-watchtower
+    image: containrrr/watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 60 larpa-server tinygameplatform-api tinygameplatform-site tinygameplatform-migrate
