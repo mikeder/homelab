@@ -1,0 +1,24 @@
+version: "3"
+services:
+  minecraft:
+    container_name: minecraft
+    image: itzg/minecraft-server:latest
+    restart: unless-stopped
+    ports:
+      - "25565:25565"
+    environment:
+      EULA: "TRUE"
+      TYPE: "PAPER"
+      # 4-6 players on Paper is light; 3G max with Aikar's flags leaves
+      # headroom for world-gen spikes. Drop to 2G if the host is tight.
+      MEMORY: "3G"
+      USE_AIKAR_FLAGS: "true"
+      MAX_PLAYERS: "6"
+      VIEW_DISTANCE: "10"
+      ENABLE_ROLLING_LOGS: "true"
+      TZ: "America/New_York"
+    volumes:
+      - /home/meder/homelab/minecraft/data:/data
+    # keep stdin/tty open so `docker attach minecraft` gives a server console
+    stdin_open: true
+    tty: true
