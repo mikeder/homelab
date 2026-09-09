@@ -9,12 +9,9 @@ services:
     environment:
       EULA: "TRUE"
       TYPE: "PAPER"
-      # 4-6 players on Paper is light; 3G max with Aikar's flags leaves
-      # headroom for world-gen spikes. Drop to 2G if the host is tight.
       MEMORY: "3G"
       USE_AIKAR_FLAGS: "true"
-      MAX_PLAYERS: "6"
-      VIEW_DISTANCE: "10"
+      MAX_PLAYERS: "10"
       ENABLE_ROLLING_LOGS: "true"
       TZ: "America/New_York"
     volumes:
