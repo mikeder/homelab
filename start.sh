@@ -2,5 +2,5 @@
 
 for d in */ ; do
     echo "$d"
-    docker-compose -f $d/docker-compose.yml up -d
+    docker compose -f $d/docker-compose.yml up -d
 done
