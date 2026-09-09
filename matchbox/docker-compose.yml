@@ -1,4 +1,3 @@
-version: "3"
 services:
   index:
     container_name: matchbox_server
