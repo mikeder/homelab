@@ -6,13 +6,14 @@ services:
     ports:
       - "25565:25565"
     environment:
-      EULA: "TRUE"
-      TYPE: "PAPER"
-      MEMORY: "3G"
-      USE_AIKAR_FLAGS: "true"
-      MAX_PLAYERS: "10"
       ENABLE_ROLLING_LOGS: "true"
+      EULA: "TRUE"
+      MAX_PLAYERS: "10"
+      MEMORY: "3G"
+      TYPE: "PAPER"
       TZ: "America/New_York"
+      USE_AIKAR_FLAGS: "true"
+      VERSION: "26.3"
     volumes:
       - /home/meder/homelab/minecraft/data:/data
     # keep stdin/tty open so `docker attach minecraft` gives a server console
