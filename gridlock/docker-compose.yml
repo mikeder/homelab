@@ -1,0 +1,25 @@
+services:
+  gridlock:
+    container_name: gridlock
+    image: mikeder/gridlock:latest
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      # enable traefik ingress
+      - traefik.enable=true
+
+      # public http -> https
+      - traefik.http.routers.gridlock-http.entrypoints=http
+      - traefik.http.routers.gridlock-http.rule=Host(`gridlock.sqweeb.net`)
+      - traefik.http.routers.gridlock-http.middlewares=redirect-https
+
+      # public https
+      - traefik.http.routers.gridlock-https.tls=true
+      - traefik.http.routers.gridlock-https.entrypoints=https
+      - traefik.http.routers.gridlock-https.tls.certresolver=letsencrypt
+      - traefik.http.routers.gridlock-https.rule=Host(`gridlock.sqweeb.net`)
+
+networks:
+  proxy:
+    external: true
