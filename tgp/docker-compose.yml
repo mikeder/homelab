@@ -9,7 +9,9 @@ services:
       - AUTH_KEY=${AUTH_KEY}
       - AUTH_ISSUER=${AUTH_ISSUER}
       - DB_DATABASEHOST=${DB_DATABASEHOST}
-      - SERVER_ALLOWEDORIGINS=${SERVER_ALLOWEDORIGINS}
+      # Browsers allowed to call the API: the server's own list (the admin site if
+      # unset), plus Gridlock for cloud saves. Comma-separated.
+      - SERVER_ALLOWEDORIGINS=${SERVER_ALLOWEDORIGINS:-https://tgp.sqweeb.net},https://gridlock.sqweeb.net
       - SERVER_PORT=${SERVER_PORT}
     restart: unless-stopped
     networks:
