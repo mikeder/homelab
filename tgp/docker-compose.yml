@@ -9,10 +9,15 @@ services:
       - AUTH_KEY=${AUTH_KEY}
       - AUTH_ISSUER=${AUTH_ISSUER}
       - DB_DATABASEHOST=${DB_DATABASEHOST}
+      - DB_DATABASEPASSWORD=${TGP_DB_PASSWORD:?set TGP_DB_PASSWORD in tgp/.env}
       # Browsers allowed to call the API: the server's own list (the admin site if
       # unset), plus Gridlock for cloud saves. Comma-separated.
       - SERVER_ALLOWEDORIGINS=${SERVER_ALLOWEDORIGINS:-https://tgp.sqweeb.net},https://gridlock.sqweeb.net
       - SERVER_PORT=${SERVER_PORT}
+      # Traefik sets X-Real-Ip to the connecting client's address (overwriting any sent
+      # by the client), so login rate limits count real players, not Traefik. Only safe
+      # because the API is reachable only through Traefik (no published ports).
+      - SERVER_CLIENTIPHEADER=X-Real-IP
     restart: unless-stopped
     networks:
       - proxy
@@ -60,12 +65,14 @@ services:
     image: postgres:16
     restart: always
     shm_size: 128mb
-    ports:
-      - "5432"
+    # No published ports: the api and migrate containers reach it on the proxy network.
+    # (A published port would bypass the host firewall.)
     environment:
       POSTGRES_DB: tgp
       POSTGRES_USER: tgp
-      POSTGRES_PASSWORD: tgp
+      # Only used when the data directory is first created; for an existing database,
+      # change the password with ALTER USER (see tgp/README.md).
+      POSTGRES_PASSWORD: ${TGP_DB_PASSWORD:?set TGP_DB_PASSWORD in tgp/.env}
     networks:
       - proxy
     volumes:
@@ -79,8 +86,8 @@ services:
       - db
     environment:
       - DATABASEHOST=db
-      - DATABASEUSERNAME=tgp
-      - DATABASEPASSWORD=tgp
+      - DATABASEUSER=tgp
+      - DATABASEPASSWORD=${TGP_DB_PASSWORD:?set TGP_DB_PASSWORD in tgp/.env}
     networks:
       - proxy
 
