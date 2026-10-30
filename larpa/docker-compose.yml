@@ -7,6 +7,10 @@ services:
       - proxy
     ports:
       - 3000:3000
+    environment:
+      # Tiny Game Platform server key: verifies joining players' logins and
+      # reports leaderboard stats. Secret: lives in larpa/.env on the server.
+      - TGP_SERVER_KEY=${TGP_SERVER_KEY:?set TGP_SERVER_KEY in larpa/.env}
     volumes:
       - /home/meder/homelab/larpa/larpa_data:/root/.local/share/godot/app_userdata/LARPA
     labels:
