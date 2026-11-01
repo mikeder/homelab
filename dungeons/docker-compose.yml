@@ -1,0 +1,49 @@
+# Dungeon Loot Adventure (git.sqweeb.net/mikeder/dungeons2): the game at
+# https://dungeons.sqweeb.net, and its co-op game server on the same host at /ws
+# (Traefik prefers the longer rule, so /ws goes to the server and everything else to
+# the web image). The server key lives in dungeons/.env.
+services:
+  dungeons:
+    container_name: dungeons
+    image: mikeder/dungeons2:latest
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      - traefik.enable=true
+
+      # public http -> https
+      - traefik.http.routers.dungeons-http.entrypoints=http
+      - traefik.http.routers.dungeons-http.rule=Host(`dungeons.sqweeb.net`)
+      - traefik.http.routers.dungeons-http.middlewares=redirect-https
+
+      # public https
+      - traefik.http.routers.dungeons-https.tls=true
+      - traefik.http.routers.dungeons-https.entrypoints=https
+      - traefik.http.routers.dungeons-https.tls.certresolver=letsencrypt
+      - traefik.http.routers.dungeons-https.rule=Host(`dungeons.sqweeb.net`)
+
+  dungeons-server:
+    container_name: dungeons-server
+    image: mikeder/dungeons2-server:latest
+    restart: unless-stopped
+    networks:
+      - proxy
+    environment:
+      # Tiny Game Platform server key: checks signed-in players' names. Secret: lives in
+      # dungeons/.env on the server. Without it, everyone plays under the name they type.
+      - TGP_SERVER_KEY=${TGP_SERVER_KEY:-}
+    labels:
+      - traefik.enable=true
+
+      # wss://dungeons.sqweeb.net/ws (WebSockets pass through Traefik as they are)
+      - traefik.http.routers.dungeons-ws.tls=true
+      - traefik.http.routers.dungeons-ws.entrypoints=https
+      - traefik.http.routers.dungeons-ws.tls.certresolver=letsencrypt
+      - traefik.http.routers.dungeons-ws.rule=Host(`dungeons.sqweeb.net`) && PathPrefix(`/ws`)
+      - traefik.http.services.dungeons-ws.loadbalancer.server.port=8787
+
+networks:
+  proxy:
+    name: proxy
+    external: true
