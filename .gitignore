@@ -7,6 +7,7 @@ minecraft/data/
 vaultwarden/vw-data/
 unifi/config/
 traefik/acme.json
+traefik-private/acme.json
 
 .DS_Store
 

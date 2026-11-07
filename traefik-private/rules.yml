@@ -1,0 +1,58 @@
+http:
+  middlewares:
+    redirect-https:
+      redirectScheme:
+        scheme: https
+
+    # Same as in traefik/rules.yml (keep them in sync). On this VM it's a second lock:
+    # the router forwards no TCP ports here, so the internet can't reach it anyway.
+    #   192.168.1.0/24  home LAN
+    #   10.8.0.0/24     WireGuard clients (wg-easy uses host networking here)
+    #   172.16.0.0/12   Docker networks, e.g. the Gitea runner and its jobs
+    private-only:
+      ipAllowList:
+        sourceRange:
+          - 192.168.1.0/24
+          - 10.8.0.0/24
+          - 172.16.0.0/12
+
+  routers:
+    # wg-easy admin page. wg-easy uses host networking (so VPN clients keep their
+    # 10.8.0.x addresses), which Traefik's Docker labels can't route to, so it's here.
+    # vpn.sqweeb.net stays the public VPN endpoint; the admin page is wg.sqweeb.net.
+    wg-easy-http:
+      rule: Host(`wg.sqweeb.net`)
+      entryPoints:
+        - http
+      middlewares:
+        - redirect-https
+      service: wg-easy
+    wg-easy:
+      rule: Host(`wg.sqweeb.net`)
+      entryPoints:
+        - https
+      middlewares:
+        - private-only
+      service: wg-easy
+      tls: {}
+
+    # Never serves traffic: requests (and renews) this VM's own wildcard certificate.
+    # See traefik/rules.yml.
+    wildcard-cert:
+      rule: Host(`wildcard-cert.sqweeb.net`)
+      priority: 1
+      entryPoints:
+        - https
+      service: noop@internal
+      tls:
+        certResolver: letsencrypt
+        domains:
+          - main: sqweeb.net
+            sans:
+              - "*.sqweeb.net"
+
+  services:
+    wg-easy:
+      loadBalancer:
+        servers:
+          - url: http://host.docker.internal:51821

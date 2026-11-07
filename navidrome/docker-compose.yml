@@ -19,6 +19,7 @@ services:
       - traefik.http.routers.navidrome-https.tls=true
       - traefik.http.routers.navidrome-https.entrypoints=https
       - traefik.http.routers.navidrome-https.rule=Host(`music.sqweeb.net`)
+      - traefik.http.routers.navidrome-https.middlewares=private-only@file # LAN + VPN only (traefik/rules.yml)
     environment:
       ND_SCANSCHEDULE: 1h
       ND_SESSIONTIMEOUT: 24h

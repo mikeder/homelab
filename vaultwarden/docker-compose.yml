@@ -28,6 +28,7 @@ services:
       - traefik.http.routers.bitwarden-ui-https.entrypoints=https
       - traefik.http.routers.bitwarden-ui-https.service=bitwarden-ui
       - traefik.http.routers.bitwarden-ui-https.rule=Host(`vault.sqweeb.net`)
+      - traefik.http.routers.bitwarden-ui-https.middlewares=private-only@file # LAN + VPN only (traefik/rules.yml)
 
       # http websocket
       - traefik.http.routers.bitwarden-ws-http.entrypoints=http
@@ -40,6 +41,7 @@ services:
       - traefik.http.routers.bitwarden-ws-https.entrypoints=https
       - traefik.http.routers.bitwarden-ws-https.service=bitwarden-ws
       - traefik.http.routers.bitwarden-ws-https.rule=Host(`vault.sqweeb.net`) && Path(`/notifications/hub`)
+      - traefik.http.routers.bitwarden-ws-https.middlewares=private-only@file # LAN + VPN only (traefik/rules.yml)
 networks:
   proxy:
     external: true

@@ -1,0 +1,7 @@
+# Stacks on docker-private (vault, git, music, VPN). Nothing on the internet reaches
+# this VM except WireGuard (UDP 51820). See traefik-private/README.md.
+traefik-private
+# vaultwarden
+# gittea
+# navidrome
+# wireguard

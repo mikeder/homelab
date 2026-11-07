@@ -1,0 +1,38 @@
+# Traefik for the private VM (vault, git, music, wg-easy admin). Same setup as
+# traefik/, but nothing on the internet reaches it: the router forwards no TCP ports to
+# this VM. See traefik-private/README.md.
+services:
+  traefik:
+    image: traefik:v3.7
+    container_name: traefik-private
+    restart: unless-stopped
+    environment:
+      # Route53 keys for the DNS challenge. Secret: lives in traefik-private/.env.
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:?set AWS_ACCESS_KEY_ID in traefik-private/.env}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:?set AWS_SECRET_ACCESS_KEY in traefik-private/.env}
+      - AWS_REGION=us-east-1
+      - AWS_HOSTED_ZONE_ID=${AWS_HOSTED_ZONE_ID:?set AWS_HOSTED_ZONE_ID in traefik-private/.env}
+    networks:
+      - proxy
+    # wg-easy runs with host networking on this VM; Traefik reaches its admin page on
+    # the host (router wg-easy in rules.yml).
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    ports:
+      - 80:80
+      - 443:443
+      # Dashboard (api.insecure: no login): localhost only. Reach it over SSH with
+      # ssh -L 8888:localhost:8888 <private VM>, then http://localhost:8888
+      - 127.0.0.1:8888:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /home/meder/homelab/traefik-private/acme.json:/acme.json
+      - /home/meder/homelab/traefik-private/traefik.yml:/traefik.yml
+      - /home/meder/homelab/traefik-private/rules.yml:/rules.yml
+    labels:
+      # Services' http routers use middlewares=redirect-https, which resolves to this.
+      - traefik.enable=true
+      - traefik.http.middlewares.redirect-https.redirectScheme.scheme=https
+networks:
+  proxy:
+    external: true

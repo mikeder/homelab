@@ -42,6 +42,7 @@ services:
       - traefik.http.routers.wg-easy-https.entrypoints=https
       - traefik.http.routers.wg-easy-https.tls.certresolver=letsencrypt
       - traefik.http.routers.wg-easy-https.rule=Host(`${WG_UI_DOMAIN}`)
+      - traefik.http.routers.wg-easy-https.middlewares=private-only@file # LAN + VPN only (traefik/rules.yml)
       - traefik.http.routers.wg-easy-https.service=wg-easy
 
 networks:

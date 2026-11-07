@@ -1,0 +1,18 @@
+# Stacks on docker-04 (the public VM). start.sh, update.sh and restart.sh run the list
+# named after this machine's hostname. Lines starting with # are skipped.
+traefik
+index
+gridlock
+dungeons
+tgp
+larpa
+matchbox
+minecraft
+watchtower
+
+# Private services: move each to hosts/docker-private once that VM is running
+# (see traefik-private/README.md).
+vaultwarden
+gittea
+navidrome
+wireguard

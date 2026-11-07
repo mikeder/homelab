@@ -4,6 +4,21 @@ http:
       redirectScheme:
         scheme: https
 
+    # For private services (vault, git, music, wg-easy admin): anyone else gets 403,
+    # even if they send the hostname straight to the public IP. Keep in sync with
+    # traefik-private/rules.yml.
+    #   192.168.1.0/24  home LAN
+    #   10.8.0.0/24     WireGuard clients (once wg-easy uses host networking)
+    #   172.16.0.0/12   Docker networks: VPN clients while wg-easy is a bridge container,
+    #                   and containers like the Gitea runner. Internet clients never show
+    #                   up here: Traefik sees their real IPs (see tgp/README.md).
+    private-only:
+      ipAllowList:
+        sourceRange:
+          - 192.168.1.0/24
+          - 10.8.0.0/24
+          - 172.16.0.0/12
+
   routers:
     # Never serves traffic: it exists so Traefik requests (and renews) the wildcard
     # certificate. Routers for *.sqweeb.net set tls=true without a certresolver, and
