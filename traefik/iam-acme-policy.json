@@ -11,13 +11,13 @@
       "Sid": "ReadZone",
       "Effect": "Allow",
       "Action": "route53:ListResourceRecordSets",
-      "Resource": "arn:aws:route53:::hostedzone/ZONE_ID"
+      "Resource": "arn:aws:route53:::hostedzone/Z3LJL2436H8SQE"
     },
     {
       "Sid": "AcmeChallengeRecordsOnly",
       "Effect": "Allow",
       "Action": "route53:ChangeResourceRecordSets",
-      "Resource": "arn:aws:route53:::hostedzone/ZONE_ID",
+      "Resource": "arn:aws:route53:::hostedzone/Z3LJL2436H8SQE",
       "Condition": {
         "ForAllValues:StringLike": {
           "route53:ChangeResourceRecordSetsNormalizedRecordNames": ["_acme-challenge.*"]
