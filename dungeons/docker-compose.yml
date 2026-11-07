@@ -20,7 +20,6 @@ services:
       # public https
       - traefik.http.routers.dungeons-https.tls=true
       - traefik.http.routers.dungeons-https.entrypoints=https
-      - traefik.http.routers.dungeons-https.tls.certresolver=letsencrypt
       - traefik.http.routers.dungeons-https.rule=Host(`dungeons.sqweeb.net`)
 
   dungeons-server:
@@ -39,7 +38,6 @@ services:
       # wss://dungeons.sqweeb.net/ws (WebSockets pass through Traefik as they are)
       - traefik.http.routers.dungeons-ws.tls=true
       - traefik.http.routers.dungeons-ws.entrypoints=https
-      - traefik.http.routers.dungeons-ws.tls.certresolver=letsencrypt
       - traefik.http.routers.dungeons-ws.rule=Host(`dungeons.sqweeb.net`) && PathPrefix(`/ws`)
       - traefik.http.services.dungeons-ws.loadbalancer.server.port=8787
 

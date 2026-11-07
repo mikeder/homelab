@@ -19,10 +19,14 @@ providers:
     filename: "/rules.yml"
     watch: true
 
+# Certificates come from Let's Encrypt's DNS challenge through Route53 (keys in
+# traefik/.env, see traefik/README.md). One wildcard covers every *.sqweeb.net router
+# (requested in rules.yml), so new hostnames don't show up in certificate logs and
+# private services can get certs without being reachable.
 certificatesResolvers:
   letsencrypt:
     acme:
       email: sqweebking@gmail.com
       storage: acme.json
-      httpChallenge:
-        entryPoint: http
+      dnsChallenge:
+        provider: route53

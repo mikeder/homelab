@@ -3,5 +3,20 @@ http:
     redirect-https:
       redirectScheme:
         scheme: https
-  services:
+
   routers:
+    # Never serves traffic: it exists so Traefik requests (and renews) the wildcard
+    # certificate. Routers for *.sqweeb.net set tls=true without a certresolver, and
+    # Traefik serves them this certificate by hostname.
+    wildcard-cert:
+      rule: Host(`wildcard-cert.sqweeb.net`)
+      priority: 1
+      entryPoints:
+        - https
+      service: noop@internal
+      tls:
+        certResolver: letsencrypt
+        domains:
+          - main: sqweeb.net
+            sans:
+              - "*.sqweeb.net"

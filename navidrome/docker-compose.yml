@@ -18,7 +18,6 @@ services:
       # https web ui
       - traefik.http.routers.navidrome-https.tls=true
       - traefik.http.routers.navidrome-https.entrypoints=https
-      - traefik.http.routers.navidrome-https.tls.certresolver=letsencrypt
       - traefik.http.routers.navidrome-https.rule=Host(`music.sqweeb.net`)
     environment:
       ND_SCANSCHEDULE: 1h

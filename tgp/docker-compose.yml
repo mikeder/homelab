@@ -21,6 +21,7 @@ services:
     restart: unless-stopped
     networks:
       - proxy
+      - tgp
     labels:
       # tell watchtower to update/restart this only after migrate
       - com.centurylinklabs.watchtower.depends-on=tinygameplatform-migrate
@@ -31,7 +32,6 @@ services:
       # https web
       - traefik.http.routers.tinygameplatform-https.tls=true
       - traefik.http.routers.tinygameplatform-https.entrypoints=https
-      - traefik.http.routers.tinygameplatform-https.tls.certresolver=letsencrypt
       - traefik.http.routers.tinygameplatform-https.rule=Host(`api.tgp.sqweeb.net`)
       # use h2c scheme for grpc backend
       # https://doc.traefik.io/traefik/user-guides/grpc/#conclusion
@@ -57,7 +57,6 @@ services:
       # https web
       - traefik.http.routers.tinygameplatform-site-https.tls=true
       - traefik.http.routers.tinygameplatform-site-https.entrypoints=https
-      - traefik.http.routers.tinygameplatform-site-https.tls.certresolver=letsencrypt
       - traefik.http.routers.tinygameplatform-site-https.rule=Host(`tgp.sqweeb.net`)
 
   db:
@@ -65,8 +64,8 @@ services:
     image: postgres:16
     restart: always
     shm_size: 128mb
-    # No published ports: the api and migrate containers reach it on the proxy network.
-    # (A published port would bypass the host firewall.)
+    # Only on the internal tgp network, so only api and migrate can reach it; other
+    # containers on proxy can't. No published ports (they would bypass the host firewall).
     environment:
       POSTGRES_DB: tgp
       POSTGRES_USER: tgp
@@ -74,7 +73,7 @@ services:
       # change the password with ALTER USER (see tgp/README.md).
       POSTGRES_PASSWORD: ${TGP_DB_PASSWORD:?set TGP_DB_PASSWORD in tgp/.env}
     networks:
-      - proxy
+      - tgp
     volumes:
       - /home/meder/homelab/tgp/data:/var/lib/postgresql/data
 
@@ -89,9 +88,12 @@ services:
       - DATABASEUSER=tgp
       - DATABASEPASSWORD=${TGP_DB_PASSWORD:?set TGP_DB_PASSWORD in tgp/.env}
     networks:
-      - proxy
+      - tgp
 
 networks:
+  # The database's network: internal (no internet, no Traefik), shared by api and migrate.
+  tgp:
+    internal: true
   proxy:
     name: proxy
     external: true

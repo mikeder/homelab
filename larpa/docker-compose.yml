@@ -3,10 +3,10 @@ services:
     container_name: larpa-server
     image: mikeder/larpa:server
     restart: always
+    # No published ports: players come in through Traefik (a published port would skip
+    # it and the host firewall).
     networks:
       - proxy
-    ports:
-      - 3000:3000
     environment:
       # Tiny Game Platform server key: verifies joining players' logins and
       # reports leaderboard stats. Secret: lives in larpa/.env on the server.
@@ -16,6 +16,7 @@ services:
     labels:
       # enable traefik ingress
       - traefik.enable=true
+      - traefik.http.services.larpa.loadbalancer.server.port=3000
 
       # http web
       - traefik.http.routers.larpa-http.entrypoints=http
@@ -25,7 +26,6 @@ services:
       # https web
       - traefik.http.routers.larpa-https.tls=true
       - traefik.http.routers.larpa-https.entrypoints=https
-      - traefik.http.routers.larpa-https.tls.certresolver=letsencrypt
       - traefik.http.routers.larpa-https.rule=Host(`larpa.sqweeb.net`)
 
 networks:

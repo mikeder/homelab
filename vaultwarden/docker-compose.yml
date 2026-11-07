@@ -27,7 +27,6 @@ services:
       - traefik.http.routers.bitwarden-ui-https.tls=true
       - traefik.http.routers.bitwarden-ui-https.entrypoints=https
       - traefik.http.routers.bitwarden-ui-https.service=bitwarden-ui
-      - traefik.http.routers.bitwarden-ui-https.tls.certresolver=letsencrypt
       - traefik.http.routers.bitwarden-ui-https.rule=Host(`vault.sqweeb.net`)
 
       # http websocket

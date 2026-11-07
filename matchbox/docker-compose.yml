@@ -3,13 +3,14 @@ services:
     container_name: matchbox_server
     image: jhelsing/matchbox-server:0.6
     restart: unless-stopped
+    # No published ports: clients come in through Traefik (a published port would skip
+    # it and the host firewall).
     networks:
       - proxy
-    ports:
-      - 3536:3536
     labels:
       # enable traefik ingress
       - traefik.enable=true
+      - traefik.http.services.matchbox.loadbalancer.server.port=3536
 
       # http web ui
       - traefik.http.routers.matchbox-http.entrypoints=http
@@ -19,7 +20,6 @@ services:
       # https web ui
       - traefik.http.routers.matchbox-https.tls=true
       - traefik.http.routers.matchbox-https.entrypoints=https
-      - traefik.http.routers.matchbox-https.tls.certresolver=letsencrypt
       - traefik.http.routers.matchbox-https.rule=Host(`match.sqweeb.net`)
 
 networks:

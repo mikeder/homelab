@@ -1,8 +1,15 @@
 services:
   traefik:
-    image: traefik:v2.5
+    image: traefik:v3.7
     container_name: traefik
     restart: unless-stopped
+    environment:
+      # Route53 keys for the DNS challenge (IAM user from traefik/iam-acme-policy.json).
+      # Secret: lives in traefik/.env on the server. See traefik/README.md.
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:?set AWS_ACCESS_KEY_ID in traefik/.env}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:?set AWS_SECRET_ACCESS_KEY in traefik/.env}
+      - AWS_REGION=us-east-1
+      - AWS_HOSTED_ZONE_ID=${AWS_HOSTED_ZONE_ID:?set AWS_HOSTED_ZONE_ID in traefik/.env}
     networks:
       - proxy
     ports:

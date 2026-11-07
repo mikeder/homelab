@@ -24,7 +24,6 @@ services:
       # public https
       - traefik.http.routers.index-https.tls=true
       - traefik.http.routers.index-https.entrypoints=https
-      - traefik.http.routers.index-https.tls.certresolver=letsencrypt
       - traefik.http.routers.index-https.rule=Host(`sqweeb.net`) || Host(`www.sqweeb.net`)
 
 networks:
