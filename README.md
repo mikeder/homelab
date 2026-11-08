@@ -28,17 +28,17 @@ Internet ──► home router ──┬─ TCP 80/443 ─► Traefik ─┬─ 
 
 ### Public
 
-| Stack | Hostname | What it is | Updates |
-|---|---|---|---|
-| [traefik](traefik/) | — | Reverse proxy and TLS. Dashboard on `localhost:8888` (SSH tunnel) | manual |
-| [index](index/) | `sqweeb.net`, `www` | Landing page: nginx serving [index/site](index/site/) | manual |
-| [gridlock](gridlock/) | `gridlock` | Gridlock web game | Watchtower |
-| [dungeons](dungeons/) | `dungeons` | Dungeon Loot Adventure; co-op server at `/ws` | Watchtower |
-| [tgp](tgp/) | `tgp`, `api.tgp` | Tiny Game Platform: admin/player site, API (gRPC/Connect), Postgres. See [tgp/README.md](tgp/README.md) | Watchtower |
-| [larpa](larpa/) | `larpa` | LARPA game server (Godot, WebSocket) | Watchtower |
-| [matchbox](matchbox/) | `match` | Matchbox WebRTC signaling server | manual |
-| [minecraft](minecraft/) | port 25565 | Paper server. Not behind Traefik. Console: `docker attach minecraft` | manual |
-| [watchtower](watchtower/) | — | Checks every 60 s for new images of the stacks marked Watchtower | manual |
+| Stack                     | Hostname            | What it is                                                                                              | Updates    |
+| ------------------------- | ------------------- | ------------------------------------------------------------------------------------------------------- | ---------- |
+| [traefik](traefik/)       | —                   | Reverse proxy and TLS. Dashboard on `localhost:8888` (SSH tunnel)                                       | manual     |
+| [index](index/)           | `sqweeb.net`, `www` | Landing page: nginx serving [index/site](index/site/)                                                   | manual     |
+| [gridlock](gridlock/)     | `gridlock`          | Gridlock web game                                                                                       | Watchtower |
+| [dungeons](dungeons/)     | `dungeons`          | Dungeon Loot Adventure; co-op server at `/ws`                                                           | Watchtower |
+| [tgp](tgp/)               | `tgp`, `api.tgp`    | Tiny Game Platform: admin/player site, API (gRPC/Connect), Postgres. See [tgp/README.md](tgp/README.md) | Watchtower |
+| [larpa](larpa/)           | `larpa`             | LARPA game server (Godot, WebSocket)                                                                    | Watchtower |
+| [matchbox](matchbox/)     | `match`             | Matchbox WebRTC signaling server                                                                        | manual     |
+| [minecraft](minecraft/)   | port 25565          | Paper server. Not behind Traefik. Console: `docker attach minecraft`                                    | manual     |
+| [watchtower](watchtower/) | —                   | Checks every 60 s for new images of the stacks marked Watchtower                                        | manual     |
 
 ### Private (LAN and VPN only)
 
@@ -46,12 +46,12 @@ These routers use the `private-only` middleware ([traefik/rules.yml](traefik/rul
 so anyone outside the LAN, VPN and Docker networks gets 403, even if they send the
 hostname to the public IP.
 
-| Stack | Hostname | What it is |
-|---|---|---|
-| [vaultwarden](vaultwarden/) | `vault` | Password manager (Bitwarden-compatible) |
-| [gittea](gittea/) | `git` | Gitea and its Actions runner. Also the Go module host (`git.sqweeb.net/mikeder/...`) |
-| [navidrome](navidrome/) | `music` | Music streaming from `/mnt/music` (FreeNAS) |
-| [wireguard](wireguard/) | `wg` (admin page); `vpn` is the public VPN endpoint | wg-easy VPN |
+| Stack                       | Hostname                                            | What it is                                                                           |
+| --------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| [vaultwarden](vaultwarden/) | `vault`                                             | Password manager (Bitwarden-compatible)                                              |
+| [gittea](gittea/)           | `git`                                               | Gitea and its Actions runner. Also the Go module host (`git.sqweeb.net/mikeder/...`) |
+| [navidrome](navidrome/)     | `music`                                             | Music streaming from `/mnt/music` (FreeNAS)                                          |
+| [wireguard](wireguard/)     | `wg` (admin page); `vpn` is the public VPN endpoint | wg-easy VPN                                                                          |
 
 Not deployed yet: [traefik-private](traefik-private/), the Traefik for docker-private.
 
@@ -92,13 +92,13 @@ the old file mounted), so restart Traefik after pulling a change to it.
 Each stack that needs secrets reads them from its own `<stack>/.env` on the server.
 These are never committed (`**/.env` is in [.gitignore](.gitignore)).
 
-| Stack | Needs |
-|---|---|
-| traefik, traefik-private | Route53 keys for the DNS challenge ([.env.example](traefik/.env.example)) |
-| tgp | `AUTH_KEY`, `TGP_DB_PASSWORD`, … ([tgp/README.md](tgp/README.md)) |
-| larpa, dungeons | `TGP_SERVER_KEY` |
-| gittea | `GITEA_RUNNER_REGISTRATION_TOKEN` |
-| wireguard | `WG_HOST`, `WG_UI_DOMAIN`, `WG_ADMIN_PASSWORD_HASH` ([.env.example](wireguard/.env.example)) |
+| Stack                    | Needs                                                                                        |
+| ------------------------ | -------------------------------------------------------------------------------------------- |
+| traefik, traefik-private | Route53 keys for the DNS challenge ([.env.example](traefik/.env.example))                    |
+| tgp                      | `AUTH_KEY`, `TGP_DB_PASSWORD`, … ([tgp/README.md](tgp/README.md))                            |
+| larpa, dungeons          | `TGP_SERVER_KEY`                                                                             |
+| gittea                   | `GITEA_RUNNER_REGISTRATION_TOKEN`                                                            |
+| wireguard                | `WG_HOST`, `WG_UI_DOMAIN`, `WG_ADMIN_PASSWORD_HASH` ([.env.example](wireguard/.env.example)) |
 
 Data directories (`*/data`, `vaultwarden/vw-data`, `traefik/acme.json`, …) stay on the
 server and are gitignored too.
@@ -143,50 +143,54 @@ host firewall.
 
 ## Proxmox VM configs
 
-`docker-04` (on the Proxmox host, `/etc/pve/qemu-server/103.conf`):
+VM 100 `freenas` (on "pve" host)
 
-```ini
-balloon: 0
-boot: order=scsi0;net0
-cores: 2
-cpu: host
-memory: 2048
-name: docker-04
-net0: virtio=2E:4D:B8:80:EE:A3,bridge=vmbr0,firewall=1
-numa: 1
-onboot: 1
-ostype: l26
-scsi0: black1:103/vm-103-disk-0.qcow2,size=200G
-scsihw: virtio-scsi-pci
-smbios1: uuid=5a2f866b-1956-46d0-b5d6-652357a48c16
-sockets: 1
-startup: order=2
-vmgenid: 09454f8c-c825-49fa-970f-543ef9bc93cc
-```
-
-`freenas` (on the separate storage machine, `100.conf`):
-
-```ini
+```bash
+# root@pve:/etc/pve/qemu-server# cat 100.conf
 balloon: 0
 boot: order=scsi0;ide2;net0
 cores: 2
 cpu: host
 ide2: none,media=cdrom
-memory: 4096
+memory: 16384
 name: freenas
 net0: virtio=3E:94:1D:50:03:30,bridge=vmbr0,firewall=1
 numa: 1
 onboot: 1
 ostype: l26
 scsi0: black1:100/vm-100-disk-1.raw,size=32G
-scsi1: /dev/disk/by-id/ata-WDC_WD20EFRX-68EUZN0_WD-WMC4M1155464,size=2000G
-scsi2: /dev/disk/by-id/ata-WDC_WD20EFRX-68EUZN0_WD-WCC4M2XPP587,size=2000G
-scsi3: /dev/disk/by-id/ata-WDC_WD20EFRX-68EUZN0_WD-WCC4M0173865,size=2000G
-scsi4: /dev/disk/by-id/ata-WDC_WD20EFRX-68EUZN0_WD-WCC4M7KDVTJ7,size=2000G
-scsi5: /dev/disk/by-id/ata-WDC_WD20EFRX-68EUZN0_WD-WCC4M6NXP2AJ,size=2000G
+scsi1: /dev/disk/by-id/ata-WDC_WD20EFRX-68EUZN0_WD-WMC4M1155464,size=2000G,serial=WMC4M1155464
+scsi2: /dev/disk/by-id/ata-WDC_WD20EFRX-68EUZN0_WD-WCC4M2XPP587,size=2000G,serial=WCC4M2XPP587
+scsi3: /dev/disk/by-id/ata-WDC_WD20EFRX-68EUZN0_WD-WCC4M0173865,size=2000G,serial=WCC4M0173865
+scsi4: /dev/disk/by-id/ata-WDC_WD20EFRX-68EUZN0_WD-WCC4M7KDVTJ7,size=2000G,serial=WCC4M7KDVTJ7
+scsi5: /dev/disk/by-id/ata-WDC_WD20EFRX-68EUZN0_WD-WCC4M6NXP2AJ,size=2000G,serial=WCC4M6NXP2AJ
+scsi6: /dev/disk/by-id/ata-WD_Red_SA500_2.5_2TB_25109QD01575,size=1953514584K,serial=25109QD01575
 scsihw: virtio-scsi-pci
 smbios1: uuid=0469a370-945e-4225-a53e-9f2cc8b7b1ff
 sockets: 1
 startup: order=1
 vmgenid: b74c87a6-b8f7-42ae-a47c-14c426cfb856
+```
+
+
+VM 101 `docker-04` on "liquidwhite" host
+
+```bash
+# root@liquidwhite:/etc/pve/qemu-server# cat 101.conf
+balloon: 0
+boot: order=scsi0;net0
+cores: 4
+cpu: host
+memory: 12288
+name: docker-04
+net0: virtio=2E:4D:B8:80:EE:A3,bridge=vmbr0,firewall=1
+numa: 1
+onboot: 1
+ostype: l26
+scsi0: local-lvm:vm-101-disk-0,size=200G
+scsihw: virtio-scsi-pci
+smbios1: uuid=5a2f866b-1956-46d0-b5d6-652357a48c16
+sockets: 1
+startup: order=2
+vmgenid: 937a6d16-dba1-484f-b25a-40a0d3a30e08
 ```
