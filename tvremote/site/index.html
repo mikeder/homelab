@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#0d0d0f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TV">
+    <title>TV Remotes</title>
+    <style>
+        :root {
+            --bg: #0d0d0f;
+            --tile: #16161a;
+            --tile-hover: #1d1d23;
+            --edge: #2a2f38;
+            --text: #eaf2f8;
+            --muted: #8a9aab;
+            --glow-blue: rgba(120, 190, 255, 0.45);
+            --glow-pink: rgba(253, 2, 182, 0.55);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            min-height: 100%;
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        main {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: calc(48px + env(safe-area-inset-top)) 16px calc(32px + env(safe-area-inset-bottom));
+        }
+
+        h1 {
+            margin: 0 0 28px;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: grid;
+            gap: 14px;
+        }
+
+        a {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 22px 20px;
+            border: 1px solid var(--edge);
+            border-radius: 18px;
+            background: var(--tile);
+            color: inherit;
+            text-decoration: none;
+            transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+        }
+
+        a:hover,
+        a:focus-visible {
+            background: var(--tile-hover);
+            border-color: #4a6a86;
+            box-shadow: 0 0 12px var(--glow-blue), 0 0 28px var(--glow-pink);
+            outline: none;
+        }
+
+        a:active {
+            transform: scale(0.98);
+        }
+
+        svg {
+            flex: none;
+            width: 44px;
+            height: 44px;
+            filter: drop-shadow(0 0 4px var(--glow-blue)) drop-shadow(0 0 10px var(--glow-pink));
+        }
+
+        .name {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .host {
+            margin-top: 3px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .chev {
+            margin-left: auto;
+            font-size: 22px;
+            color: var(--muted);
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h1>Pick a TV</h1>
+        <!-- Rename the TVs here. Each link goes to that TV's remote (tvremote/docker-compose.yml). -->
+        <ul>
+            <li><a href="https://tv1.sqweeb.net/"><svg viewBox="0 0 24 24"><use href="#tv" /></svg>
+                    <div>
+                        <div class="name">TV 1</div>
+                        <div class="host">tv1.sqweeb.net</div>
+                    </div><span class="chev">›</span>
+                </a></li>
+            <li><a href="https://tv2.sqweeb.net/"><svg viewBox="0 0 24 24"><use href="#tv" /></svg>
+                    <div>
+                        <div class="name">TV 2</div>
+                        <div class="host">tv2.sqweeb.net</div>
+                    </div><span class="chev">›</span>
+                </a></li>
+            <li><a href="https://tv3.sqweeb.net/"><svg viewBox="0 0 24 24"><use href="#tv" /></svg>
+                    <div>
+                        <div class="name">TV 3</div>
+                        <div class="host">tv3.sqweeb.net</div>
+                    </div><span class="chev">›</span>
+                </a></li>
+        </ul>
+    </main>
+
+    <svg width="0" height="0" style="position:absolute">
+        <defs>
+            <linearGradient id="chrome" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#f4f8fc" />
+                <stop offset="0.45" stop-color="#5f7f9c" />
+                <stop offset="0.52" stop-color="#eaf2f8" />
+                <stop offset="1" stop-color="#38566f" />
+            </linearGradient>
+            <g id="tv" fill="none" stroke="url(#chrome)" stroke-width="1.6" stroke-linecap="round"
+                stroke-linejoin="round">
+                <rect x="2.5" y="5" width="19" height="12.5" rx="2" />
+                <path d="M8 21h8M12 17.5V21M8.5 1.5 12 5l3.5-3.5" />
+            </g>
+        </defs>
+    </svg>
+</body>
+
+</html>

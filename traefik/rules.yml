@@ -20,6 +20,41 @@ http:
           - 172.16.0.0/12
 
   routers:
+    # TV remotes (tv1-3; the start page at tv.sqweeb.net uses Docker labels). They use
+    # host networking (for Wake-on-LAN broadcasts), which Traefik's Docker labels can't
+    # route to, so they're here. They have no login of their own.
+    tvremote-http:
+      rule: Host(`tv1.sqweeb.net`) || Host(`tv2.sqweeb.net`) || Host(`tv3.sqweeb.net`)
+      entryPoints:
+        - http
+      middlewares:
+        - redirect-https
+      service: tvremote-1 # never used: every request is redirected
+    tvremote-1:
+      rule: Host(`tv1.sqweeb.net`)
+      entryPoints:
+        - https
+      middlewares:
+        - private-only
+      service: tvremote-1
+      tls: {}
+    tvremote-2:
+      rule: Host(`tv2.sqweeb.net`)
+      entryPoints:
+        - https
+      middlewares:
+        - private-only
+      service: tvremote-2
+      tls: {}
+    tvremote-3:
+      rule: Host(`tv3.sqweeb.net`)
+      entryPoints:
+        - https
+      middlewares:
+        - private-only
+      service: tvremote-3
+      tls: {}
+
     # Never serves traffic: it exists so Traefik requests (and renews) the wildcard
     # certificate. Routers for *.sqweeb.net set tls=true without a certresolver, and
     # Traefik serves them this certificate by hostname.
@@ -35,3 +70,18 @@ http:
           - main: sqweeb.net
             sans:
               - "*.sqweeb.net"
+
+  services:
+    # Ports are SERVER_PORT in tvremote/docker-compose.yml.
+    tvremote-1:
+      loadBalancer:
+        servers:
+          - url: http://host.docker.internal:3081
+    tvremote-2:
+      loadBalancer:
+        servers:
+          - url: http://host.docker.internal:3082
+    tvremote-3:
+      loadBalancer:
+        servers:
+          - url: http://host.docker.internal:3083

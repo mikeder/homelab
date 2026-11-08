@@ -52,6 +52,7 @@ hostname to the public IP.
 | [gittea](gittea/)           | `git`                                               | Gitea and its Actions runner. Also the Go module host (`git.sqweeb.net/mikeder/...`) |
 | [navidrome](navidrome/)     | `music`                                             | Music streaming from `/mnt/music` (FreeNAS)                                          |
 | [wireguard](wireguard/)     | `wg` (admin page); `vpn` is the public VPN endpoint | wg-easy VPN                                                                          |
+| [tvremote](tvremote/)       | `tv` (start page), `tv1`, `tv2`, `tv3`              | Web remotes for the Samsung TVs, one per TV, with Wake-on-LAN. No login: `private-only` is the only lock |
 
 Not deployed yet: [traefik-private](traefik-private/), the Traefik for docker-private.
 
@@ -59,12 +60,14 @@ Not deployed yet: [traefik-private](traefik-private/), the Traefik for docker-pr
 
 **Router port forwards to docker-04:** TCP 80, 443 and 25565; UDP 51820. Nothing else is
 needed. Every web service goes through Traefik, and no stack publishes other ports.
+The exception is tvremote: it uses host networking, so its remotes also listen on LAN
+ports 3081–3083.
 
 **Public hostnames** are Route53 CNAMEs to `sqweeb.net`, whose A record is the home IP.
 When the home IP changes, only that one record needs updating.
 
 **Private hostnames** resolve to docker-04's LAN IP in two places:
-- **Router local DNS** (`vault`, `git`, `music`, `wg` → `192.168.1.248`). LAN devices and VPN
+- **Router local DNS** (`vault`, `git`, `music`, `wg`, `tv`, `tv1`–`tv3` → `192.168.1.248`). LAN devices and VPN
   clients use this. The router won't pass private IPs from public DNS through, so these
   entries are required.
 - **Route53** CNAMEs to `docker.sqweeb.net` (A `192.168.1.248`). These are for devices
@@ -99,6 +102,7 @@ These are never committed (`**/.env` is in [.gitignore](.gitignore)).
 | larpa, dungeons          | `TGP_SERVER_KEY`                                                                             |
 | gittea                   | `GITEA_RUNNER_REGISTRATION_TOKEN`                                                            |
 | wireguard                | `WG_HOST`, `WG_UI_DOMAIN`, `WG_ADMIN_PASSWORD_HASH` ([.env.example](wireguard/.env.example)) |
+| tvremote                 | `TV1_IP`, `TV1_MAC`, … for each TV (not secret, just specific to this house) ([.env.example](tvremote/.env.example)) |
 
 Data directories (`*/data`, `vaultwarden/vw-data`, `traefik/acme.json`, …) stay on the
 server and are gitignored too.

@@ -1,0 +1,87 @@
+# Web remotes for the Samsung TVs (https://github.com/tedyno/tvremote). One app per TV,
+# since each one controls a single TV:
+#   tv.sqweeb.net    start page: pick a TV (tvremote/site/index.html)
+#   tv1.sqweeb.net   TV 1, port 3081
+#   tv2.sqweeb.net   TV 2, port 3082
+#   tv3.sqweeb.net   TV 3, port 3083
+# The remotes have no login: Traefik's private-only middleware is the only lock.
+#
+# Host networking, like upstream: Wake-on-LAN (turning a TV on) is a UDP broadcast to
+# 192.168.1.255 and 255.255.255.255, which can't leave a Docker bridge network.
+# Traefik's Docker labels can't route to host-network containers, so the remotes'
+# routers are in traefik/rules.yml (and traefik-private/rules.yml). Keep the ports there
+# in sync with SERVER_PORT here.
+#
+# Each app listens on 0.0.0.0:SERVER_PORT, so its port is also open on the LAN
+# directly. The router forwards none of them, so they stay LAN-only.
+#
+# First start: each TV shows a prompt to allow "TVRemote". Accept it; the token is
+# saved in tvremote/data/tvN.
+x-tvremote: &tvremote
+  image: ghcr.io/tedyno/tvremote:1.0.0
+  restart: unless-stopped
+  network_mode: host
+
+services:
+  tvremote-1:
+    <<: *tvremote
+    container_name: tvremote-1
+    environment:
+      # TV addresses and MACs (for Wake-on-LAN) live in tvremote/.env; see .env.example.
+      - TV_IP=${TV1_IP:?set TV1_IP in tvremote/.env}
+      - TV_MAC=${TV1_MAC:?set TV1_MAC in tvremote/.env}
+      - TV_PORT=8002
+      - SERVER_PORT=3081
+      - APP_NAME=TVRemote
+      - TOKEN_FILE=/app/data/tv-token.txt
+    volumes:
+      - /home/meder/homelab/tvremote/data/tv1:/app/data
+
+  tvremote-2:
+    <<: *tvremote
+    container_name: tvremote-2
+    environment:
+      - TV_IP=${TV2_IP:?set TV2_IP in tvremote/.env}
+      - TV_MAC=${TV2_MAC:?set TV2_MAC in tvremote/.env}
+      - TV_PORT=8002
+      - SERVER_PORT=3082
+      - APP_NAME=TVRemote
+      - TOKEN_FILE=/app/data/tv-token.txt
+    volumes:
+      - /home/meder/homelab/tvremote/data/tv2:/app/data
+
+  tvremote-3:
+    <<: *tvremote
+    container_name: tvremote-3
+    environment:
+      - TV_IP=${TV3_IP:?set TV3_IP in tvremote/.env}
+      - TV_MAC=${TV3_MAC:?set TV3_MAC in tvremote/.env}
+      - TV_PORT=8002
+      - SERVER_PORT=3083
+      - APP_NAME=TVRemote
+      - TOKEN_FILE=/app/data/tv-token.txt
+    volumes:
+      - /home/meder/homelab/tvremote/data/tv3:/app/data
+
+  # Start page at tv.sqweeb.net: a static page linking to the three remotes.
+  tvremote-start:
+    container_name: tvremote-start
+    image: nginx:alpine
+    restart: unless-stopped
+    networks:
+      - proxy
+    volumes:
+      - /home/meder/homelab/tvremote/site:/usr/share/nginx/html:ro
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.tvremote-start-http.entrypoints=http
+      - traefik.http.routers.tvremote-start-http.rule=Host(`tv.sqweeb.net`)
+      - traefik.http.routers.tvremote-start-http.middlewares=redirect-https
+      - traefik.http.routers.tvremote-start-https.entrypoints=https
+      - traefik.http.routers.tvremote-start-https.rule=Host(`tv.sqweeb.net`)
+      - traefik.http.routers.tvremote-start-https.tls=true
+      - traefik.http.routers.tvremote-start-https.middlewares=private-only@file # LAN + VPN only (traefik/rules.yml)
+
+networks:
+  proxy:
+    external: true
