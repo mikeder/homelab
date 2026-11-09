@@ -1,9 +1,9 @@
 # Web remotes for the Samsung TVs (https://github.com/tedyno/tvremote). One app per TV,
 # since each one controls a single TV:
 #   tv.sqweeb.net    start page: pick a TV (tvremote/site/index.html)
-#   tv1.sqweeb.net   TV 1, port 3081
-#   tv2.sqweeb.net   TV 2, port 3082
-#   tv3.sqweeb.net   TV 3, port 3083
+#   tv1.sqweeb.net   Sitting Room, port 3081
+#   tv2.sqweeb.net   Bedroom, port 3082
+#   tv3.sqweeb.net   Basement, port 3083
 # The remotes have no login: Traefik's private-only middleware is the only lock.
 #
 # Host networking, like upstream: Wake-on-LAN (turning a TV on) is a UDP broadcast to
