@@ -7,6 +7,7 @@ valheim/data/
 minecraft/data/
 vaultwarden/vw-data/
 unifi/config/
+unifi/mongo-data/
 traefik/acme.json
 traefik-private/acme.json
 

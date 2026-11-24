@@ -1,0 +1,27 @@
+services:
+  unifi-db:
+    container_name: unifi-db
+    image: mongo:7.0
+    restart: unless-stopped
+    network_mode: host
+    env_file: .env
+    volumes:
+      - /home/meder/homelab/unifi/mongo-data:/data/db
+      - /home/meder/homelab/unifi/init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh:ro
+
+  unifi-network-application:
+    container_name: unifi-network-application
+    image: lscr.io/linuxserver/unifi-network-application:latest
+    restart: unless-stopped
+    network_mode: host
+    depends_on:
+      - unifi-db
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: America/New_York
+      MONGO_HOST: 127.0.0.1
+      MONGO_PORT: 27017
+    env_file: .env
+    volumes:
+      - /home/meder/homelab/unifi/config:/config
