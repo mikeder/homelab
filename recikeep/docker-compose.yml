@@ -12,7 +12,11 @@
 services:
   recikeep:
     container_name: recikeep
-    image: mikeder/recikeep:latest
+    # Built by recikeep's CI and pushed to Gitea's container registry on each vX.Y.Z tag.
+    # Pulls work without docker login while mikeder's packages are public. If they
+    # become private: docker login git.sqweeb.net on docker-04 with a read:package token,
+    # and mount ~/.docker/config.json into Watchtower as /config.json.
+    image: git.sqweeb.net/mikeder/recikeep:latest
     restart: unless-stopped
     user: "1000:1000" # meder, so recikeep/data stays editable on the host
     environment:
