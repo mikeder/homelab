@@ -1,0 +1,36 @@
+# Recikeep: self-hosted recipe box (https://git.sqweeb.net/mikeder/recikeep).
+# Imports recipes from URLs and from photos of cookbook pages.
+#   recipes.sqweeb.net   LAN + VPN only: the app has no login, and photo import
+#                        spends Claude API credits.
+#
+# Data: SQLite database (and the original photos) in recikeep/data. Create the
+# directory before the first start so it's owned by meder, not root:
+#   mkdir -p ~/homelab/recikeep/data
+#
+# Photo import needs ANTHROPIC_API_KEY in recikeep/.env (see .env.example).
+# Without it, everything else works and photo uploads explain what's missing.
+services:
+  recikeep:
+    container_name: recikeep
+    image: mikeder/recikeep:latest
+    restart: unless-stopped
+    user: "1000:1000" # meder, so recikeep/data stays editable on the host
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    volumes:
+      - /home/meder/homelab/recikeep/data:/data
+    networks:
+      - proxy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.recikeep-http.entrypoints=http
+      - traefik.http.routers.recikeep-http.rule=Host(`recipes.sqweeb.net`)
+      - traefik.http.routers.recikeep-http.middlewares=redirect-https
+      - traefik.http.routers.recikeep-https.entrypoints=https
+      - traefik.http.routers.recikeep-https.rule=Host(`recipes.sqweeb.net`)
+      - traefik.http.routers.recikeep-https.tls=true
+      - traefik.http.routers.recikeep-https.middlewares=private-only@file # LAN + VPN only (traefik/rules.yml)
+
+networks:
+  proxy:
+    external: true
