@@ -1,7 +1,7 @@
 services:
   larpa:
     container_name: larpa-server
-    image: mikeder/larpa:server
+    image: git.sqweeb.net/mikeder/larpa:server
     restart: always
     # No published ports: players come in through Traefik (a published port would skip
     # it and the host firewall).

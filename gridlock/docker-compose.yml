@@ -1,7 +1,7 @@
 services:
   gridlock:
     container_name: gridlock
-    image: mikeder/gridlock:latest
+    image: git.sqweeb.net/mikeder/gridlock:latest
     restart: unless-stopped
     networks:
       - proxy

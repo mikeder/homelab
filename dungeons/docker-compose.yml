@@ -5,7 +5,7 @@
 services:
   dungeons:
     container_name: dungeons
-    image: mikeder/dungeons2:latest
+    image: git.sqweeb.net/mikeder/dungeons2:latest
     restart: unless-stopped
     networks:
       - proxy
@@ -24,7 +24,7 @@ services:
 
   dungeons-server:
     container_name: dungeons-server
-    image: mikeder/dungeons2-server:latest
+    image: git.sqweeb.net/mikeder/dungeons2-server:latest
     restart: unless-stopped
     networks:
       - proxy

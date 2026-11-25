@@ -123,7 +123,7 @@ server and are gitignored too.
 services:
   myapp:
     container_name: myapp
-    image: mikeder/myapp:latest
+    image: git.sqweeb.net/mikeder/myapp:latest
     restart: unless-stopped
     networks:
       - proxy

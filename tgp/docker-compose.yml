@@ -1,7 +1,7 @@
 services:
   api:
     container_name: tinygameplatform-api
-    image: mikeder/tinygameplatform:api
+    image: git.sqweeb.net/mikeder/tinygameplatform:api
     depends_on:
       - db
       - migrate
@@ -39,7 +39,7 @@ services:
 
   site:
     container_name: tinygameplatform-site
-    image: mikeder/tinygameplatform:site
+    image: git.sqweeb.net/mikeder/tinygameplatform:site
     depends_on:
       - api
     restart: unless-stopped
@@ -79,7 +79,7 @@ services:
 
   migrate:
     container_name: tinygameplatform-migrate
-    image: mikeder/tinygameplatform:migrate
+    image: git.sqweeb.net/mikeder/tinygameplatform:migrate
     restart: on-failure
     depends_on:
       - db
